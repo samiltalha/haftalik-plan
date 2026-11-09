@@ -1,5 +1,5 @@
 // Basit önbellek: uygulama dosyaları çevrimdışı açılabilsin, veriler her zaman canlı gelsin.
-const CACHE = 'plan-v1';
+const CACHE = 'plan-v3';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'config.js', 'manifest.webmanifest', 'icon-192.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => {

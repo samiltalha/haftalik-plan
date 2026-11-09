@@ -7,13 +7,13 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
 
 /* ================= constants ================= */
 const CATEGORIES = [
-  { id: 'okul', name: 'Okul / Ders', color: '#2563eb' },
-  { id: 'is', name: 'İş / Proje', color: '#7c3aed' },
-  { id: 'calisma', name: 'Çalışma', color: '#0891b2' },
-  { id: 'spor', name: 'Spor', color: '#16a34a' },
-  { id: 'kisisel', name: 'Kişisel', color: '#ea580c' },
-  { id: 'dogum', name: 'Doğum günü / Özel gün', color: '#db2777' },
-  { id: 'genel', name: 'Diğer', color: '#64748b' },
+  { id: 'okul', name: 'Okul / Ders', short: 'Okul', color: '#3b82f6' },
+  { id: 'is', name: 'İş / Proje', short: 'İş', color: '#8b5cf6' },
+  { id: 'calisma', name: 'Çalışma', short: 'Çalışma', color: '#06b6d4' },
+  { id: 'spor', name: 'Spor', short: 'Spor', color: '#22c55e' },
+  { id: 'kisisel', name: 'Kişisel', short: 'Kişisel', color: '#f97316' },
+  { id: 'dogum', name: 'Doğum günü / Özel gün', short: 'Özel gün', color: '#ec4899' },
+  { id: 'genel', name: 'Diğer', short: 'Diğer', color: '#94a3b8' },
 ];
 const CAT = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 const COLORS = ['#4f46e5', '#2563eb', '#0891b2', '#16a34a', '#ca8a04', '#ea580c', '#dc2626', '#db2777', '#7c3aed', '#475569'];
@@ -25,6 +25,7 @@ const REPEAT_LABEL = { daily: 'Her gün', weekdays: 'Hafta içi', weekly: 'Her h
 const ICONS = {
   today: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
   week: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   team: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
 };
 
@@ -120,6 +121,7 @@ function planItem(o, { showOwner = false, now = new Date() } = {}) {
   const isPast = o.occEnd <= now;
   const multiDay = !sameDay(o.occStart, new Date(o.occEnd - 1));
   const time = multiDay ? `${hm(o.occStart)} → ${o.occEnd.getDate()} ${MONTHS[o.occEnd.getMonth()].slice(0, 3)}` : `${hm(o.occStart)}–${hm(o.occEnd)}`;
+  const mine = o.user_id === state.profile.id;
   return `<button class="plan ${isNow ? 'now' : ''} ${isPast ? 'past' : ''}" data-plan="${o.id}" data-occ="${o.occStart.getTime()}">
     <span class="bar" style="background:${cat.color}"></span>
     <span class="time">${time}</span>
@@ -127,10 +129,10 @@ function planItem(o, { showOwner = false, now = new Date() } = {}) {
       <span class="title">${esc(o.title)}</span>
       <span class="meta">
         ${isNow ? '<span class="nowpill">ŞU AN</span>' : ''}
-        ${showOwner ? `<span class="tag" style="border-color:${owner.color};color:${owner.color}">${esc(owner.full_name)}</span>` : ''}
-        <span class="tag">${esc(cat.name)}</span>
-        ${o.repeat !== 'none' ? `<span class="tag">↻ ${REPEAT_LABEL[o.repeat]}</span>` : ''}
-        ${o.is_private ? '<span class="tag lock">Özel</span>' : ''}
+        ${showOwner ? `<span style="color:${owner.color};font-weight:600">${esc(owner.full_name)}</span>` : ''}
+        <span class="cat"><i style="background:${cat.color}"></i>${esc(cat.short)}</span>
+        ${o.repeat !== 'none' ? `<span>↻ ${REPEAT_LABEL[o.repeat]}</span>` : ''}
+        ${mine && !o.is_private ? '<span class="shared">👥 Ekip görüyor</span>' : ''}
       </span>
     </span>
   </button>`;
@@ -140,7 +142,7 @@ function shell(inner, title, sub) {
   const p = state.profile;
   return `<div class="shell">
     <header class="top">
-      <h1>${esc(title)}<span class="sub">${esc(sub || '')}</span></h1>
+      <div class="titles"><div class="eyebrow">${esc(sub || '')}</div><h1>${esc(title)}</h1></div>
       <button class="avatar" id="profileBtn" title="Profil" style="background:${p.color}">${esc(initials(p.full_name))}</button>
     </header>
     <nav class="tabs">
@@ -148,7 +150,7 @@ function shell(inner, title, sub) {
         `<button data-view="${v}" class="${state.view === v ? 'active' : ''}">${ICONS[v]}<span>${l}</span></button>`).join('')}
     </nav>
     <main>${inner}</main>
-    <button class="fab" id="fab" aria-label="Plan ekle">+</button>
+    <button class="fab" id="fab" aria-label="Plan ekle">${ICONS.plus}<span>Plan ekle</span></button>
   </div>`;
 }
 
@@ -177,28 +179,29 @@ async function renderToday() {
 
   let html = '';
   if (now.getDay() === 0) {
-    html += `<div class="card banner"><p><b>Bugün pazar.</b> Gelecek haftanın planını yaptın mı? Ekip de görecek.</p>
-      <button class="btn primary" id="planNextWeek">Gelecek haftayı planla</button></div>`;
+    html += `<div class="card banner"><p><b>Bugün pazar.</b> Gelecek haftanın planını yaptın mı?</p>
+      <button class="btn primary sm" id="planNextWeek">Gelecek haftayı planla</button></div>`;
   }
   if (!state.profile.is_member) html += joinCard();
 
   const summary = current
-    ? `Şu an: <b>${esc(current.title)}</b> (${hm(current.occEnd)}'a kadar)`
-    : next ? `Sıradaki: <b>${esc(next.title)}</b>, ${hm(next.occStart)}` : (todayOcc.length ? 'Bugünkü planların bitti 🎉' : '');
+    ? `<div class="status"><span class="dot"></span><span>Şu an <b>${esc(current.title)}</b> · ${hm(current.occEnd)}'a kadar</span></div>`
+    : next ? `<div class="status"><span class="dot next"></span><span>Sıradaki <b>${esc(next.title)}</b> · ${hm(next.occStart)}</span></div>`
+    : (todayOcc.length ? '<div class="status"><span class="dot done"></span><span>Bugünkü planların bitti</span></div>' : '');
 
   html += `<div class="grid2"><div>
-    <div class="card"><h3>Bugün <span class="count">${todayOcc.length} plan</span></h3>
-      ${summary ? `<p style="margin:0 0 10px">${summary}</p>` : ''}
+    <div class="card"><div class="card-head"><h3>Bugün</h3><span class="count">${todayOcc.length} plan</span></div>
+      ${summary}
       ${todayOcc.length ? todayOcc.map(o => planItem(o, { now })).join('') : `<div class="empty">Bugün için plan yok. Sağ alttaki + ile ekleyebilirsin.</div>`}
     </div>
-    <div class="card"><h3>Yarın <span class="count">${fmtDay(addDays(today, 1))}</span></h3>
+    <div class="card"><div class="card-head"><h3>Yarın</h3><span class="count">${fmtDay(addDays(today, 1))}</span></div>
       ${tomorrowOcc.length ? tomorrowOcc.map(o => planItem(o, { now })).join('') : '<div class="empty">Yarın için plan yok.</div>'}
     </div></div><div>
-    <div class="card"><h3>Bu haftanın kalanı</h3>
-      ${restOfWeek.length ? groupByDay(restOfWeek).map(([d, list]) => `<div style="margin-bottom:8px"><div class="hint" style="margin:4px 0">${fmtDay(d)}</div>${list.map(o => planItem(o, { now })).join('')}</div>`).join('') : '<div class="empty">Haftanın geri kalanı boş.</div>'}
+    <div class="card"><div class="card-head"><h3>Bu haftanın kalanı</h3></div>
+      ${restOfWeek.length ? groupByDay(restOfWeek).map(([d, list]) => `<div class="daylabel">${fmtDay(d)}</div>${list.map(o => planItem(o, { now })).join('')}`).join('') : '<div class="empty">Haftanın geri kalanı boş.</div>'}
     </div>
-    <div class="card"><h3>🎂 Yaklaşan özel günler</h3>
-      ${special.length ? special.map(o => `<div class="plan" style="cursor:default"><span class="bar" style="background:${CAT.dogum.color}"></span><span class="time">${o.occStart.getDate()} ${MONTHS[o.occStart.getMonth()]}</span><span class="body"><span class="title">${esc(o.title)}</span><span class="meta"><span class="tag">${esc(profileOf(o.user_id).full_name)}</span><span class="tag">${daysUntil(o.occStart)}</span></span></span></div>`).join('') : '<div class="empty">Önümüzdeki 60 günde özel gün yok. Doğum günlerini "Doğum günü / Özel gün" kategorisiyle ekle.</div>'}
+    <div class="card"><div class="card-head"><h3>🎂 Yaklaşan özel günler</h3></div>
+      ${special.length ? special.map(o => `<div class="plan static"><span class="bar" style="background:${CAT.dogum.color}"></span><span class="time">${o.occStart.getDate()} ${MONTHS[o.occStart.getMonth()]}<small>${daysUntil(o.occStart)}</small></span><span class="body"><span class="title">${esc(o.title)}</span><span class="meta">${esc(profileOf(o.user_id).full_name)}</span></span></div>`).join('') : '<div class="empty">Önümüzdeki 60 günde özel gün yok. Doğum günlerini "Doğum günü / Özel gün" kategorisiyle ekle.</div>'}
     </div>
   </div></div>`;
 
@@ -230,13 +233,13 @@ async function renderWeek() {
     const d = addDays(ws, i);
     const list = occ.filter(o => sameDay(o.occStart, d));
     html += `<div class="day ${sameDay(d, now) ? 'today' : ''}">
-      <div class="dh"><b>${DAYS[d.getDay()]}</b><span>${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}</span></div>
+      <div class="dh"><span class="num">${d.getDate()}</span><span class="name"><b>${DAYS[d.getDay()]}</b>${MONTHS[d.getMonth()]}</span></div>
       ${list.map(o => planItem(o, { now })).join('')}
       <button class="add" data-add="${ymd(d)}">+ Ekle</button>
     </div>`;
   }
   html += '</div>';
-  $app.innerHTML = shell(html, 'Haftam', 'Sadece senin planların');
+  $app.innerHTML = shell(html, 'Haftam', 'Senin planların');
   bindCommon();
   bindWeekNav('w');
   $app.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => openPlanDialog(null, b.dataset.add)));
@@ -249,10 +252,10 @@ function weekNav(ws, key) {
     : `${ws.getDate()} ${MONTHS[ws.getMonth()]} – ${we.getDate()} ${MONTHS[we.getMonth()]}`;
   const rel = state.weekOffset === 0 ? 'Bu hafta' : state.weekOffset === 1 ? 'Gelecek hafta' : state.weekOffset === -1 ? 'Geçen hafta' : '';
   return `<div class="weeknav">
-    <button data-${key}="-1" aria-label="Önceki hafta">‹</button>
-    <span class="label">${label}${rel ? ` <span class="hint">· ${rel}</span>` : ''}</span>
-    ${state.weekOffset !== 0 ? `<button data-${key}="0">Bu hafta</button>` : ''}
-    <button data-${key}="1" aria-label="Sonraki hafta">›</button>
+    <span class="label">${label}<small>${rel || '&nbsp;'}</small></span>
+    ${state.weekOffset !== 0 ? `<button class="btn sm" data-${key}="0">Bu hafta</button>` : ''}
+    <button class="btn icon" data-${key}="-1" aria-label="Önceki hafta">‹</button>
+    <button class="btn icon" data-${key}="1" aria-label="Sonraki hafta">›</button>
   </div>`;
 }
 function bindWeekNav(key) {
@@ -267,7 +270,7 @@ function bindWeekNav(key) {
 async function renderTeam() {
   const now = new Date();
   if (!state.profile.is_member) {
-    $app.innerHTML = shell(joinCard(), 'Ekip planları', 'Ekibe katıl');
+    $app.innerHTML = shell(joinCard(), 'Ekip', 'Ekibe katıl');
     bindCommon();
     return;
   }
@@ -286,26 +289,26 @@ async function renderTeam() {
   html += '<div class="chips" id="dayChips">' + Array.from({ length: 7 }, (_, i) => {
     const d = addDays(ws, i);
     const n = occ.filter(o => sameDay(o.occStart, d)).length;
-    return `<button class="chip ${sameDay(d, day) ? 'active' : ''}" data-day="${i}">${DAYS_SHORT[d.getDay()]} ${d.getDate()}<small>${n} plan</small></button>`;
+    return `<button class="chip dchip ${sameDay(d, day) ? 'active' : ''}" data-day="${i}"><small>${DAYS_SHORT[d.getDay()]}</small><b>${d.getDate()}</b><small>${n ? n + ' plan' : '—'}</small></button>`;
   }).join('') + '</div>';
   html += '<div class="chips">' + [['all', 'Herkes'], ...members.map(m => [m.id, m.full_name])].map(([id, name]) =>
-    `<button class="chip ${state.teamFilter === id ? 'active' : ''}" data-who="${id}">${esc(name)}</button>`).join('') + '</div>';
+    `<button class="chip person ${state.teamFilter === id ? 'active' : ''}" data-who="${id}">${id !== 'all' ? `<i style="background:${profileOf(id).color}"></i>` : ''}${esc(name)}</button>`).join('') + '</div>';
 
   const shown = state.teamFilter === 'all' ? members : members.filter(m => m.id === state.teamFilter);
   html += '<div class="members">';
   for (const m of shown) {
     const list = occ.filter(o => o.user_id === m.id && sameDay(o.occStart, day));
     const doingNow = occ.find(o => o.user_id === m.id && o.occStart <= now && o.occEnd > now);
-    html += `<div class="card member"><h3>
-      <span class="avatar sm" style="background:${m.color}">${esc(initials(m.full_name))}</span>
-      ${esc(m.full_name)}${m.id === state.profile.id ? ' <span class="count">(sen)</span>' : ''}
-      ${doingNow ? `<span class="now-doing"><b>●</b> ${esc(doingNow.title)}</span>` : ''}
-    </h3>
+    html += `<div class="card member"><div class="card-head">
+      <h3><span class="avatar sm" style="background:${m.color}">${esc(initials(m.full_name))}</span>${esc(m.full_name)}</h3>
+      ${m.id === state.profile.id ? '<span class="count">sen</span>' : ''}
+      ${doingNow ? `<span class="now-doing"><span>${esc(doingNow.title)}</span></span>` : ''}
+    </div>
     ${list.length ? list.map(o => planItem(o, { now })).join('') : '<div class="empty">Bu gün için plan yok.</div>'}
     </div>`;
   }
   html += '</div>';
-  $app.innerHTML = shell(html, 'Ekip planları', fmtDay(day));
+  $app.innerHTML = shell(html, 'Ekip', fmtDay(day));
   bindCommon();
   bindWeekNav('t');
   $app.querySelectorAll('[data-day]').forEach(b => b.addEventListener('click', () => { state.teamDay = addDays(ws, Number(b.dataset.day)); render(); }));
@@ -315,7 +318,7 @@ async function renderTeam() {
 function joinCard() {
   return `<div class="card banner"><p><b>Ekibe katıl.</b> Ekip planlarını görmek ve planlarını ekiple paylaşmak için ekip kodunu gir.</p>
     <form id="joinForm" style="display:flex;gap:8px;flex:1;min-width:220px">
-      <input name="code" placeholder="Ekip kodu" required style="margin:0;text-transform:uppercase" autocomplete="off">
+      <input name="code" placeholder="EKİP KODU" required autocomplete="off">
       <button class="btn primary">Katıl</button>
     </form></div>`;
 }
@@ -356,7 +359,7 @@ document.getElementById('categorySelect').innerHTML = CATEGORIES.map(c => `<opti
 
 function syncRepeatUI() {
   const r = planForm.repeat.value;
-  document.getElementById('untilWrap').style.visibility = r === 'none' || r === 'yearly' ? 'hidden' : 'visible';
+  document.getElementById('untilWrap').hidden = r === 'none' || r === 'yearly';
 }
 planForm.repeat.addEventListener('change', syncRepeatUI);
 planForm.category.addEventListener('change', () => {
@@ -386,7 +389,7 @@ function openPlanDialog(plan, dateStr) {
     planForm.repeat.value = plan.repeat;
     planForm.repeat_until.value = plan.repeat_until || '';
     planForm.note.value = plan.note;
-    planForm.is_private.checked = plan.is_private;
+    planForm.share.checked = !plan.is_private;
   } else {
     const now = new Date();
     planForm.date.value = dateStr || ymd(now);
@@ -414,7 +417,7 @@ planForm.addEventListener('submit', async e => {
     end_at: end.toISOString(),
     repeat: f.repeat.value,
     repeat_until: f.repeat.value === 'none' || f.repeat.value === 'yearly' ? null : (f.repeat_until.value || null),
-    is_private: f.is_private.checked,
+    is_private: !f.share.checked,
   };
   const btn = document.getElementById('savePlanBtn');
   btn.disabled = true;
@@ -447,10 +450,10 @@ function openView(p, occStart) {
   const s = occStart || new Date(p.start_at);
   const e = new Date(s.getTime() + (new Date(p.end_at) - new Date(p.start_at)));
   document.getElementById('viewBody').innerHTML = `
-    <p class="hint" style="color:${owner.color};font-weight:600">${esc(owner.full_name)}</p>
+    <div class="owner"><span class="avatar sm" style="background:${owner.color}">${esc(initials(owner.full_name))}</span>${esc(owner.full_name)}</div>
     <h2>${esc(p.title)}</h2>
-    <p>${fmtDay(s)}, ${hm(s)}–${hm(e)}</p>
-    <p><span class="tag">${esc(cat.name)}</span> ${p.repeat !== 'none' ? `<span class="tag">↻ ${REPEAT_LABEL[p.repeat]}</span>` : ''}</p>
+    <p>${fmtDay(s)} · ${hm(s)}–${hm(e)}</p>
+    <p style="display:flex;gap:12px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:8px;height:8px;border-radius:50%;background:${cat.color};display:inline-block"></i>${esc(cat.name)}</span>${p.repeat !== 'none' ? `<span>↻ ${REPEAT_LABEL[p.repeat]}</span>` : ''}</p>
     ${p.note ? `<p style="white-space:pre-wrap;margin-top:10px">${esc(p.note)}</p>` : ''}`;
   viewDialog.showModal();
 }
@@ -496,7 +499,8 @@ let authMode = 'login';
 function renderAuth(msg) {
   const reg = authMode === 'register';
   $app.innerHTML = `<div class="auth"><div class="card">
-    <h1>📅 Haftalık Plan</h1>
+    <img class="logo" src="icon-192.png" alt="">
+    <h1>Haftalık Plan</h1>
     <p class="lead">Bugün ne yapacağını gör, haftanı planla, ekibin ne yaptığını takip et.</p>
     <div class="switch">
       <button data-mode="login" class="${!reg ? 'active' : ''}">Giriş yap</button>
@@ -508,7 +512,7 @@ function renderAuth(msg) {
       <label>Şifre<input name="password" type="password" required minlength="6" autocomplete="${reg ? 'new-password' : 'current-password'}"></label>
       ${reg ? '<label>Ekip kodu<input name="code" placeholder="Ekip yöneticisinden al" autocomplete="off" style="text-transform:uppercase"></label>' : ''}
       ${msg ? `<p class="${msg.ok ? 'ok' : 'error'}">${esc(msg.text)}</p>` : ''}
-      <button class="full primary" id="authBtn">${reg ? 'Hesap oluştur' : 'Giriş yap'}</button>
+      <button class="btn primary block" id="authBtn">${reg ? 'Hesap oluştur' : 'Giriş yap'}</button>
     </form>
   </div></div>`;
   $app.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { authMode = b.dataset.mode; renderAuth(); }));

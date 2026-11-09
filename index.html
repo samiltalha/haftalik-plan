@@ -12,6 +12,9 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -35,7 +38,7 @@
     <label>Kategori
       <select name="category" id="categorySelect"></select>
     </label>
-    <div class="row2">
+    <div>
       <label>Tekrar
         <select name="repeat">
           <option value="none">Tekrarlanmaz</option>
@@ -52,24 +55,25 @@
     <label>Not
       <textarea name="note" rows="2" maxlength="1000" placeholder="İsteğe bağlı"></textarea>
     </label>
-    <label class="check">
-      <input name="is_private" type="checkbox">
-      <span>Özel: sadece ben görürüm (ekip görmez)</span>
+    <label class="toggle">
+      <span class="txt"><b>Ekip de görsün</b><small>Kapalıysa bu planı sadece sen görürsün</small></span>
+      <input name="share" type="checkbox">
+      <span class="sw"></span>
     </label>
     <p class="hint" id="seriesHint" hidden>Bu tekrarlanan bir plan. Değişiklik ve silme tüm tekrarları etkiler.</p>
     <p class="error" id="planError" hidden></p>
     <div class="actions">
-      <button type="button" class="danger" id="deletePlanBtn" hidden>Sil</button>
+      <button type="button" class="btn danger" id="deletePlanBtn" hidden>Sil</button>
       <span class="spacer"></span>
-      <button type="button" class="ghost" id="cancelPlanBtn">Vazgeç</button>
-      <button type="submit" class="primary" id="savePlanBtn">Kaydet</button>
+      <button type="button" class="btn ghost" id="cancelPlanBtn">Vazgeç</button>
+      <button type="submit" class="btn primary" id="savePlanBtn">Kaydet</button>
     </div>
   </form>
 </dialog>
 
 <dialog id="viewDialog">
   <div class="view-body" id="viewBody"></div>
-  <div class="actions"><span class="spacer"></span><button type="button" class="primary" id="closeViewBtn">Tamam</button></div>
+  <div class="actions"><span class="spacer"></span><button type="button" class="btn primary" id="closeViewBtn">Tamam</button></div>
 </dialog>
 
 <dialog id="profileDialog">
@@ -78,16 +82,15 @@
     <label>Adın (ekip bunu görür)
       <input name="full_name" required maxlength="60">
     </label>
-    <label>Rengin
-      <div class="swatches" id="swatches"></div>
-    </label>
+    <div class="hint" style="color:var(--text-2);font-weight:500;font-size:13px;margin:0">Rengin</div>
+    <div class="swatches" id="swatches" style="margin-bottom:16px"></div>
     <div id="teamBox"></div>
     <p class="error" id="profileError" hidden></p>
     <div class="actions">
-      <button type="button" class="ghost" id="logoutBtn">Çıkış yap</button>
+      <button type="button" class="btn danger" id="logoutBtn">Çıkış yap</button>
       <span class="spacer"></span>
-      <button type="button" class="ghost" id="cancelProfileBtn">Vazgeç</button>
-      <button type="submit" class="primary">Kaydet</button>
+      <button type="button" class="btn ghost" id="cancelProfileBtn">Vazgeç</button>
+      <button type="submit" class="btn primary">Kaydet</button>
     </div>
   </form>
 </dialog>
