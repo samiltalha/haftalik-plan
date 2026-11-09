@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Haftalık Plan</title>
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Plan">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div class="splash">Yükleniyor…</div>
+</div>
+
+<dialog id="planDialog">
+  <form id="planForm" method="dialog">
+    <h2 id="planDialogTitle">Yeni plan</h2>
+    <label>Ne yapacaksın?
+      <input name="title" required maxlength="200" placeholder="ör. Okul, İHA işi, FPGA tasarımı">
+    </label>
+    <label>Tarih
+      <input name="date" type="date" required>
+    </label>
+    <div class="row2">
+      <label>Başlangıç <input name="start" type="time" required></label>
+      <label>Bitiş <input name="end" type="time" required></label>
+    </div>
+    <label>Kategori
+      <select name="category" id="categorySelect"></select>
+    </label>
+    <div class="row2">
+      <label>Tekrar
+        <select name="repeat">
+          <option value="none">Tekrarlanmaz</option>
+          <option value="daily">Her gün</option>
+          <option value="weekdays">Hafta içi her gün</option>
+          <option value="weekly">Her hafta</option>
+          <option value="yearly">Her yıl</option>
+        </select>
+      </label>
+      <label id="untilWrap">Şu tarihe kadar
+        <input name="repeat_until" type="date">
+      </label>
+    </div>
+    <label>Not
+      <textarea name="note" rows="2" maxlength="1000" placeholder="İsteğe bağlı"></textarea>
+    </label>
+    <label class="check">
+      <input name="is_private" type="checkbox">
+      <span>Özel: sadece ben görürüm (ekip görmez)</span>
+    </label>
+    <p class="hint" id="seriesHint" hidden>Bu tekrarlanan bir plan. Değişiklik ve silme tüm tekrarları etkiler.</p>
+    <p class="error" id="planError" hidden></p>
+    <div class="actions">
+      <button type="button" class="danger" id="deletePlanBtn" hidden>Sil</button>
+      <span class="spacer"></span>
+      <button type="button" class="ghost" id="cancelPlanBtn">Vazgeç</button>
+      <button type="submit" class="primary" id="savePlanBtn">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="viewDialog">
+  <div class="view-body" id="viewBody"></div>
+  <div class="actions"><span class="spacer"></span><button type="button" class="primary" id="closeViewBtn">Tamam</button></div>
+</dialog>
+
+<dialog id="profileDialog">
+  <form id="profileForm" method="dialog">
+    <h2>Profil</h2>
+    <label>Adın (ekip bunu görür)
+      <input name="full_name" required maxlength="60">
+    </label>
+    <label>Rengin
+      <div class="swatches" id="swatches"></div>
+    </label>
+    <div id="teamBox"></div>
+    <p class="error" id="profileError" hidden></p>
+    <div class="actions">
+      <button type="button" class="ghost" id="logoutBtn">Çıkış yap</button>
+      <span class="spacer"></span>
+      <button type="button" class="ghost" id="cancelProfileBtn">Vazgeç</button>
+      <button type="submit" class="primary">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
