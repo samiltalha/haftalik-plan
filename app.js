@@ -108,13 +108,26 @@ async function loadProfile() {
   state.profiles = all || [state.profile];
 }
 const profileOf = id => state.profiles.find(p => p.id === id) || { full_name: '?', color: '#64748b' };
+// plan sahibi ya da plana dahil edilmiş kişi mi?
+const involves = (p, uid) => p.user_id === uid || (p.participants || []).includes(uid);
+// plandaki herkes (sahibi önce)
+const peopleOf = p => [p.user_id, ...(p.participants || []).filter(id => id !== p.user_id)];
+const firstName = name => (name || '?').trim().split(/\s+/)[0];
+function withPeople(o, viewer) {
+  const others = peopleOf(o).filter(id => id !== viewer);
+  if (!others.length || !(o.participants || []).length) return '';
+  const ps = others.map(profileOf);
+  const names = ps.length <= 2 ? ps.map(x => firstName(x.full_name)).join(', ') : `${firstName(ps[0].full_name)} +${ps.length - 1}`;
+  return `<span class="with" title="${esc(ps.map(x => x.full_name).join(', '))}"><span class="stack">${ps.slice(0, 4).map(x =>
+    `<i style="background:${x.color}">${esc(initials(x.full_name))}</i>`).join('')}</span>${esc(names)} ile</span>`;
+}
 const initials = name => (name || '?').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toLocaleUpperCase('tr');
 
 /* ================= rendering ================= */
 const $app = document.getElementById('app');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-function planItem(o, { showOwner = false, now = new Date() } = {}) {
+function planItem(o, { showOwner = false, now = new Date(), viewer = state.profile.id } = {}) {
   const cat = CAT[o.category] || CAT.genel;
   const owner = profileOf(o.user_id);
   const isNow = o.occStart <= now && o.occEnd > now;
@@ -132,6 +145,7 @@ function planItem(o, { showOwner = false, now = new Date() } = {}) {
         ${showOwner ? `<span style="color:${owner.color};font-weight:600">${esc(owner.full_name)}</span>` : ''}
         <span class="cat"><i style="background:${cat.color}"></i>${esc(cat.short)}</span>
         ${o.repeat !== 'none' ? `<span>↻ ${REPEAT_LABEL[o.repeat]}</span>` : ''}
+        ${withPeople(o, viewer)}
         ${mine && !o.is_private ? '<span class="shared">👥 Ekip görüyor</span>' : ''}
       </span>
     </span>
@@ -166,7 +180,7 @@ async function renderToday() {
   const today = startOfDay(now);
   const horizon = addDays(today, 60);
   const plans = await fetchPlans(today, horizon);
-  const mine = plans.filter(p => p.user_id === state.profile.id);
+  const mine = plans.filter(p => involves(p, state.profile.id));
   state.cache.mine = mine;
   state.cache.team = plans;
   const todayOcc = expand(mine, today, addDays(today, 1));
@@ -224,7 +238,7 @@ async function renderWeek() {
   const now = new Date();
   const ws = addDays(weekStart(now), state.weekOffset * 7);
   const we = addDays(ws, 7);
-  const plans = (await fetchPlans(ws, we)).filter(p => p.user_id === state.profile.id);
+  const plans = (await fetchPlans(ws, we)).filter(p => involves(p, state.profile.id));
   state.cache.mine = plans;
   const occ = expand(plans, ws, we);
   let html = weekNav(ws, 'w');
@@ -297,14 +311,14 @@ async function renderTeam() {
   const shown = state.teamFilter === 'all' ? members : members.filter(m => m.id === state.teamFilter);
   html += '<div class="members">';
   for (const m of shown) {
-    const list = occ.filter(o => o.user_id === m.id && sameDay(o.occStart, day));
-    const doingNow = occ.find(o => o.user_id === m.id && o.occStart <= now && o.occEnd > now);
+    const list = occ.filter(o => involves(o, m.id) && sameDay(o.occStart, day));
+    const doingNow = occ.find(o => involves(o, m.id) && o.occStart <= now && o.occEnd > now);
     html += `<div class="card member"><div class="card-head">
       <h3><span class="avatar sm" style="background:${m.color}">${esc(initials(m.full_name))}</span>${esc(m.full_name)}</h3>
       ${m.id === state.profile.id ? '<span class="count">sen</span>' : ''}
       ${doingNow ? `<span class="now-doing"><span>${esc(doingNow.title)}</span></span>` : ''}
     </div>
-    ${list.length ? list.map(o => planItem(o, { now })).join('') : '<div class="empty">Bu gün için plan yok.</div>'}
+    ${list.length ? list.map(o => planItem(o, { now, viewer: m.id })).join('') : '<div class="empty">Bu gün için plan yok.</div>'}
     </div>`;
   }
   html += '</div>';
@@ -355,6 +369,24 @@ function setView(v) { state.view = v; localSet('view', v); render(); }
 const planDialog = document.getElementById('planDialog');
 const planForm = document.getElementById('planForm');
 let editing = null;
+let picked = new Set();
+function renderPeoplePicker() {
+  const wrap = document.getElementById('peopleWrap');
+  const others = state.profile.is_member ? state.profiles.filter(p => p.is_member && p.id !== state.profile.id) : [];
+  wrap.hidden = !others.length;
+  document.getElementById('peoplePicker').innerHTML = others.map(p =>
+    `<button type="button" class="chip person ${picked.has(p.id) ? 'active' : ''}" data-pick="${p.id}" aria-pressed="${picked.has(p.id)}"><span class="avatar xs" style="background:${p.color}">${esc(initials(p.full_name))}</span>${esc(p.full_name)}</button>`).join('');
+  document.getElementById('peopleHint').textContent = picked.size
+    ? `${picked.size} kişi dahil. Bu plan onların günlük planında da görünür.`
+    : 'Seçtiğin kişilerin günlük planına da eklenir.';
+}
+document.getElementById('peoplePicker').addEventListener('click', e => {
+  const b = e.target.closest('[data-pick]');
+  if (!b) return;
+  const id = b.dataset.pick;
+  picked.has(id) ? picked.delete(id) : picked.add(id);
+  renderPeoplePicker();
+});
 document.getElementById('categorySelect').innerHTML = CATEGORIES.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 
 function syncRepeatUI() {
@@ -390,7 +422,9 @@ function openPlanDialog(plan, dateStr) {
     planForm.repeat_until.value = plan.repeat_until || '';
     planForm.note.value = plan.note;
     planForm.share.checked = !plan.is_private;
+    picked = new Set(plan.participants || []);
   } else {
+    picked = new Set();
     const now = new Date();
     planForm.date.value = dateStr || ymd(now);
     const h = Math.min(now.getHours() + 1, 22);
@@ -399,6 +433,7 @@ function openPlanDialog(plan, dateStr) {
     planForm.category.value = 'genel';
   }
   syncRepeatUI();
+  renderPeoplePicker();
   planDialog.showModal();
   if (!plan) setTimeout(() => planForm.title.focus(), 50);
 }
@@ -419,6 +454,8 @@ planForm.addEventListener('submit', async e => {
     repeat_until: f.repeat.value === 'none' || f.repeat.value === 'yearly' ? null : (f.repeat_until.value || null),
     is_private: !f.share.checked,
   };
+  // participants sütunu henüz yoksa (SQL çalıştırılmadıysa) eski planlar yine kaydedilebilsin
+  if (picked.size || (editing && 'participants' in editing)) row.participants = [...picked];
   const btn = document.getElementById('savePlanBtn');
   btn.disabled = true;
   const { error } = editing
@@ -454,7 +491,18 @@ function openView(p, occStart) {
     <h2>${esc(p.title)}</h2>
     <p>${fmtDay(s)} · ${hm(s)}–${hm(e)}</p>
     <p style="display:flex;gap:12px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:8px;height:8px;border-radius:50%;background:${cat.color};display:inline-block"></i>${esc(cat.name)}</span>${p.repeat !== 'none' ? `<span>↻ ${REPEAT_LABEL[p.repeat]}</span>` : ''}</p>
-    ${p.note ? `<p style="white-space:pre-wrap;margin-top:10px">${esc(p.note)}</p>` : ''}`;
+    ${p.note ? `<p style="white-space:pre-wrap;margin-top:10px">${esc(p.note)}</p>` : ''}
+    ${(p.participants || []).length ? `<div class="people-list"><small>Bu planda</small>${peopleOf(p).map(id => { const x = profileOf(id); return `<span class="chip person"><span class="avatar xs" style="background:${x.color}">${esc(initials(x.full_name))}</span>${esc(x.full_name)}${id === p.user_id ? ' <small>(ekleyen)</small>' : id === state.profile.id ? ' <small>(sen)</small>' : ''}</span>`; }).join('')}</div>` : ''}`;
+  const leave = document.getElementById('leavePlanBtn');
+  leave.hidden = !(p.participants || []).includes(state.profile.id);
+  leave.onclick = async () => {
+    if (!confirm('Bu plandan ayrılmak istiyor musun? Artık senin planlarında görünmez.')) return;
+    const { error } = await sb.rpc('leave_plan', { plan: p.id });
+    if (error) { toast('Ayrılamadın: ' + error.message); return; }
+    viewDialog.close();
+    toast('Plandan ayrıldın');
+    render();
+  };
   viewDialog.showModal();
 }
 document.getElementById('closeViewBtn').addEventListener('click', () => viewDialog.close());

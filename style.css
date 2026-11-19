@@ -330,3 +330,22 @@ dialog h2 { margin: 0 0 18px; font-size: 18px; letter-spacing: -.01em; }
 }
 @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 8px); } }
 @media (min-width: 900px) { .toast { bottom: 32px; } }
+
+/* ================= plana dahil edilen ekip arkadaşları ================= */
+.avatar.xs { width: 20px; height: 20px; font-size: 9px; border-width: 0; box-shadow: none; display: inline-grid; }
+.people { margin-bottom: 14px; }
+.people-label { font-size: 13px; color: var(--text-2); font-weight: 500; margin-bottom: 6px; }
+.people-picker { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.people-picker .chip.person { padding: 4px 12px 4px 4px; }
+.people .hint { margin: 0; }
+.with { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); font-weight: 500; }
+.with .stack { display: inline-flex; }
+.with .stack i {
+  width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center;
+  font-size: 8px; font-weight: 700; color: #fff; font-style: normal; box-shadow: 0 0 0 2px var(--surface);
+}
+.with .stack i + i { margin-left: -3px; }
+.people-list { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 12px; }
+.people-list > small { width: 100%; color: var(--muted); font-size: 12px; }
+.people-list .chip.person { padding: 3px 10px 3px 3px; }
+.people-list .chip small { display: inline; }
