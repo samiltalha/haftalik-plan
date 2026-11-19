@@ -60,6 +60,7 @@
       <input name="share" type="checkbox">
       <span class="sw"></span>
     </label>
+    <p class="hint leader-hint" id="leaderHint" hidden>Ekip lideri olarak başka bir üyenin planını düzenliyorsun.</p>
     <p class="hint" id="seriesHint" hidden>Bu tekrarlanan bir plan. Değişiklik ve silme tüm tekrarları etkiler.</p>
     <p class="error" id="planError" hidden></p>
     <div class="actions">
@@ -91,6 +92,22 @@
       <span class="spacer"></span>
       <button type="button" class="btn ghost" id="cancelProfileBtn">Vazgeç</button>
       <button type="submit" class="btn primary">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="removeDialog">
+  <form id="removeForm" method="dialog">
+    <h2>Üyeyi çıkar</h2>
+    <p class="hint" style="font-size:14px;color:var(--text-2)"><b id="removeName"></b> için ne yapılsın?</p>
+    <label class="radio"><input type="radio" name="mode" value="remove" checked>
+      <span><b>Ekipten çıkar</b><small>Hesabı kalır, ekip planlarını göremez. Ekip koduyla tekrar katılabilir.</small></span></label>
+    <label class="radio"><input type="radio" name="mode" value="delete">
+      <span><b>Hesabı tamamen sil</b><small>Hesabı ve tüm planları kalıcı olarak silinir. Deneme hesapları için.</small></span></label>
+    <div class="actions">
+      <span class="spacer"></span>
+      <button type="button" class="btn ghost" id="cancelRemoveBtn">Vazgeç</button>
+      <button type="submit" class="btn primary danger-fill">Onayla</button>
     </div>
   </form>
 </dialog>
