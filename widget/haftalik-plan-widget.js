@@ -174,17 +174,24 @@ const cachePath = fm.joinPath(fm.documentsDirectory(), 'haftalik-plan-widget-cac
 
 async function fetchPlans(session, from, to) {
   const f = from.toISOString(), t = to.toISOString();
-  const q = [
-    'select=id,user_id,title,category,start_at,end_at,repeat,repeat_until,is_private',
-    `or=(and(repeat.eq.none,start_at.lt.${t},end_at.gt.${f}),and(repeat.neq.none,start_at.lt.${t}))`,
-    'order=start_at',
-  ];
-  if (!AYAR.EKIP_PLANLARI) q.push(`user_id=eq.${session.user_id}`);
-  const req = new Request(`${SUPABASE_URL}/rest/v1/plans?${q.map(encodeURI).join('&')}`);
-  req.headers = { apikey: SUPABASE_KEY, Authorization: `Bearer ${session.access_token}` };
-  const data = await req.loadJSON();
-  if (!Array.isArray(data)) throw new Error((data && data.message) || 'Planlar alınamadı');
-  return data;
+  const time = `or(and(repeat.eq.none,start_at.lt.${t},end_at.gt.${f}),and(repeat.neq.none,start_at.lt.${t}))`;
+  const me = session.user_id;
+  const get = async params => {
+    const req = new Request(`${SUPABASE_URL}/rest/v1/plans?${params.map(encodeURI).join('&')}`);
+    req.headers = { apikey: SUPABASE_KEY, Authorization: `Bearer ${session.access_token}` };
+    const data = await req.loadJSON();
+    if (!Array.isArray(data)) throw new Error((data && data.message) || 'Planlar alınamadı');
+    return data;
+  };
+  const cols = 'id,user_id,title,category,start_at,end_at,repeat,repeat_until,is_private';
+  if (AYAR.EKIP_PLANLARI) return get([`select=${cols}`, `and=(${time})`, 'order=start_at']);
+  try {
+    // Benim planlarım + beni katılımcı olarak eklediği planlar
+    return await get([`select=${cols},participants`, `and=(${time},or(user_id.eq.${me},participants.cs.{${me}}))`, 'order=start_at']);
+  } catch (e) {
+    // "participants" sütunu henüz yoksa sadece kendi planlarım
+    return await get([`select=${cols}`, `and=(${time})`, `user_id=eq.${me}`, 'order=start_at']);
+  }
 }
 
 // { plans, offline, error }
