@@ -44,7 +44,7 @@ App Store'dan ücretsiz **Scriptable** uygulamasını indir.
 4. Eklediğin widget'a bir kez daha dokun, **Script** kısmından **Günlük Akış**'ı seç.
 5. Sağ üstten **Bitti**.
 
-İstersen kilit ekranına yuvarlak olanı da ekleyip aynı betiği seçebilirsin: bugünkü ilerlemeyi (4/6) halka olarak gösterir. Ana ekrana da küçük ya da orta boy Scriptable widget'ı ekleyebilirsin: orada sıradaki birkaç plan renkli listelenir.
+İstersen ana ekrana da küçük ya da orta boy Scriptable widget'ı ekleyebilirsin: orada sıradaki birkaç plan renkli listelenir.
 
 ## İsteğe bağlı ayarlar
 
