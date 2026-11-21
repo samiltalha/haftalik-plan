@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="L-ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فيلا للبيع – البشارة 1 | Villa for sale – Al-Bashara 1</title>
+<meta name="description" content="فيلا للبيع في المربع الذهبي بالبشارة 1 – أرض 440 م²، بدروم + أرضي + أول، مؤسسة لخمسة طوابق، ثلاث واجهات.">
+<meta property="og:title" content="فيلا للبيع – المربع الذهبي، البشارة 1">
+<meta property="og:description" content="أرض 440 م² · بدروم + أرضي + أول · مؤسسة لخمسة طوابق · ثلاث واجهات">
+<meta property="og:image" content="exterior.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"./three.module.min.js","three/addons/":"./"}}</script>
+<style>
+/* VOICE: confident estate-agent listing, warm and plain.
+   IDEA: an architect's section drawing pinned beside a real photo.
+   PICTURE: façade photo full width, building section, 3D model of the villa.
+   COLOUR/TYPE: façade sand dominant band, near-black ink, deep blue accent; Cairo titles, Plex Arabic body.
+   LAYOUT: hero + key facts, layout, plans, finishes, gallery, contact; hidden admin panel at #admin. */
+:root{color-scheme:light dark;--bg:light-dark(#fbf8f3,#15120f);--ink:light-dark(#1c1814,#f2ece3);--mut:light-dark(#6c6259,#b4aa9e);--line:light-dark(#e6ddd0,#3a332c);--card:light-dark(#fff,#1f1a16);--sand:#d9a352;--sandD:light-dark(#f4e3c4,#3b2d18);--blue:light-dark(#1d4e89,#7fb0ec);--wa:#1c9c4f}
+*{box-sizing:border-box;min-width:0}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.65 "IBM Plex Sans Arabic",system-ui,sans-serif;overflow-x:clip}
+.L-ar .en,.L-en .ar{display:none!important}
+h1,h2,h3{font-family:Cairo,"IBM Plex Sans Arabic",sans-serif;line-height:1.1;text-wrap:balance;margin:0}
+h2{font-size:clamp(26px,3.4vw,36px);margin-bottom:18px}
+.band{padding:clamp(28px,4vw,60px) max(5vw,16px)}.wrap{max-width:1180px;margin:auto}
+a{color:inherit}
+.banner{background:var(--blue);color:light-dark(#fff,#0d1a2a);text-align:center;padding:8px 16px;font-weight:600}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px max(5vw,16px);background:var(--ink);color:var(--bg)}
+header b{font-family:Cairo;font-size:18px}
+.lang{background:none;border:1px solid currentColor;color:inherit;border-radius:99px;padding:6px 16px;min-height:40px;font:inherit;cursor:pointer}
+.hero{position:relative;background:#000}
+.hero img{display:block;width:100%;max-width:2160px;margin:auto;height:clamp(280px,56vw,680px);max-height:72vh;object-fit:cover;object-position:50% 60%}
+.cap{position:absolute;inset-inline-start:12px;top:12px;background:rgba(0,0,0,.62);color:#fff;font-size:13px;padding:4px 12px;border-radius:99px}
+.facts{background:var(--sand);color:#1c1814}
+.facts .wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:end}
+.facts h1{font-size:clamp(30px,4.6vw,50px);font-weight:800}
+.facts p{margin:10px 0 0;font-size:17px}
+.price{display:inline-block;margin-top:16px;background:#1c1814;color:#fbf8f3;font:700 20px Cairo;padding:8px 18px;border-radius:10px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;background:rgba(28,24,20,.25);border-radius:14px;overflow:hidden}
+.stats div{background:#e8b96a;padding:14px 16px}
+.stats strong{display:block;font:800 clamp(22px,3vw,30px)/1.1 Cairo}
+.stats span{font-size:14px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:12px;font:600 16px "IBM Plex Sans Arabic",sans-serif;text-decoration:none;border:0;cursor:pointer}
+.btn svg{width:20px;height:20px;flex:none}
+.wa{background:var(--wa);color:#fff}.call{background:#1c1814;color:#fff}.ghost{background:transparent;border:2px solid #1c1814;color:#1c1814}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.floors{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center}
+.fl{border-top:1px solid var(--line);padding:16px 0}.fl:last-child{border-bottom:1px solid var(--line)}
+.fl h3{font-size:20px;margin-bottom:6px}.fl ul{margin:0;padding-inline-start:20px;color:var(--mut)}
+.sec{width:100%;height:auto;display:block}.sec{fill:var(--ink)}.sec text{font-family:"IBM Plex Sans Arabic",sans-serif}
+.plans{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
+.m3d{position:relative;height:clamp(340px,52vw,560px);border-radius:16px;overflow:hidden;background:#cdd8e8}
+.m3d .tools{position:absolute;inset-inline-start:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:8px;z-index:2}
+.m3d .tools button{min-height:40px;padding:0 14px;border-radius:10px;border:0;background:rgba(255,255,255,.9);color:#1c1814;font:600 14px "IBM Plex Sans Arabic",sans-serif;cursor:pointer}
+.m3d .tools button[aria-pressed=true]{background:#1c1814;color:#fff}
+.m3d .hint{position:absolute;inset-inline-end:12px;top:10px;font-size:13px;color:#1c1814;background:rgba(255,255,255,.75);padding:2px 10px;border-radius:99px;z-index:2}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.fin{background:var(--sandD)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.it{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.it b{display:block;font-size:17px}.it small{color:var(--mut);font-size:14px}
+.site{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.gal button{padding:0;border:0;border-radius:14px;overflow:hidden;cursor:zoom-in;background:#000;display:block;position:relative;aspect-ratio:4/3}
+.gal button:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+.gal img{display:block;width:100%;height:100%;object-fit:cover}
+.gal span{position:absolute;inset-inline-start:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:13px;padding:2px 10px;border-radius:99px}
+.note{color:var(--mut);font-size:14px;margin-top:10px}
+form.lead{display:grid;gap:12px;max-width:560px}
+label{font-weight:600;font-size:15px}
+input,textarea,select{width:100%;font:16px "IBM Plex Sans Arabic",sans-serif;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);min-height:48px}
+textarea{min-height:100px;resize:vertical}
+.send{background:var(--blue);color:light-dark(#fff,#0d1a2a)}
+.ok{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;max-width:560px}
+.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px)}
+.num{font:700 22px Cairo;direction:ltr;unicode-bidi:isolate;margin:4px 0}
+footer{padding:24px max(5vw,16px) 96px;color:var(--mut);font-size:14px;border-top:1px solid var(--line);position:relative}
+.adm-dot{position:absolute;inset-inline-end:10px;bottom:8px;color:var(--line);text-decoration:none;font-size:12px;padding:6px}
+.bar{position:fixed;inset-inline:0;bottom:0;display:none;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line);z-index:5}
+.bar .btn{flex:1}
+dialog{border:0;padding:0;background:transparent;max-width:96vw;max-height:94vh}
+dialog img{max-width:96vw;max-height:88vh;display:block;border-radius:10px}
+dialog::backdrop{background:rgba(0,0,0,.88)}
+.dbtn{position:absolute;width:44px;height:44px;border-radius:50%;border:0;background:#fff;font-size:22px;cursor:pointer}
+.x{top:8px;inset-inline-end:8px}.pv{top:45%;inset-inline-start:8px}.nx{top:45%;inset-inline-end:8px}
+@media(max-width:820px){.facts .wrap,.floors,.site,.contact,.plans{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.bar{display:flex}.gal{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.gal button:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:16/10}footer{padding-bottom:110px}}
+@media(prefers-reduced-motion:no-preference){.hero img{animation:in .9s ease-out}@keyframes in{from{opacity:.3;transform:scale(1.03)}}}
+
+/* ---------- admin ---------- */
+#adm{position:fixed;inset:0;z-index:50;background:light-dark(#fff,#111);color:var(--ink);overflow:auto;direction:ltr;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+#adm .top{position:sticky;top:0;z-index:2;background:var(--sand);color:#141210;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px max(3vw,12px)}
+#adm h1{font:800 20px system-ui,sans-serif}#adm h2{font:700 18px system-ui,sans-serif;margin:0 0 10px}
+#adm .tabs{display:flex;gap:6px;flex-wrap:wrap;padding:10px max(3vw,12px);border-bottom:1px solid var(--line);position:sticky;top:56px;background:light-dark(#fff,#111);z-index:1}
+#adm .tab{min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:none;color:inherit;cursor:pointer;font:inherit}
+#adm .tab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#adm .pane{padding:16px max(3vw,12px);max-width:1240px;margin:auto}
+#adm .b{min-height:40px;padding:0 16px;border-radius:9px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer;font:inherit;font-weight:600;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+#adm .b.o{background:transparent;color:inherit}#adm .b.s{min-height:34px;padding:0 10px;font-size:13px}
+#adm input,#adm textarea,#adm select{font:15px system-ui,sans-serif;min-height:40px;padding:8px 10px;background:light-dark(#fff,#1a1815)}
+#adm .row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+#adm .fld{display:grid;gap:4px;margin-bottom:12px}#adm .fld>span{font-weight:600;font-size:14px}
+#adm .m{color:var(--mut);font-size:13px}
+#adm .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+#adm .tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+#adm .tile b{display:block;font-size:28px;line-height:1.1}#adm .tile span{color:var(--mut);font-size:13px}
+#adm .rows div{display:grid;grid-template-columns:140px minmax(0,1fr) 40px;gap:10px;align-items:center;margin:6px 0}
+#adm .rows i{display:block;height:12px;background:var(--sand);border-radius:4px}#adm .rows em{font-style:normal;text-align:right}
+#adm .chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+#adm .chip{min-height:34px;padding:0 12px;border-radius:99px;border:1px solid var(--line);background:none;color:inherit;cursor:pointer;font:inherit}
+#adm .chip[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+#adm .v{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.2fr);gap:12px}
+#adm .v.hot{border-color:var(--sand);box-shadow:inset 4px 0 0 var(--sand)}
+#adm .code{font:800 19px system-ui;letter-spacing:.05em}
+#adm .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}#adm .tag{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+#adm .tag.w{background:var(--wa);color:#fff;border-color:var(--wa)}#adm .tag.f{background:var(--sand);color:#141210;border-color:var(--sand)}
+#adm .nums{display:grid;grid-template-columns:repeat(4,1fr);text-align:center}#adm .nums b{display:block;font-size:19px}#adm .nums span{font-size:12px;color:var(--mut)}
+#adm .lead{background:var(--card);border-radius:8px;padding:8px 10px;margin-top:8px;font-size:14px}
+#adm .ed{display:grid;gap:6px}#adm .ed textarea{min-height:56px}
+#adm .ph{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
+#adm .ph img{width:120px;height:84px;object-fit:cover;border-radius:8px}#adm .ph .acts{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+#adm .qr{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+#adm .qr img{width:200px;height:200px;image-rendering:pixelated;background:#fff;border-radius:8px;border:1px solid var(--line)}
+#adm .link{word-break:break-all;background:var(--card);padding:8px 10px;border-radius:8px;font-size:14px}
+#adm .login{max-width:360px;margin:12vh auto;display:grid;gap:10px;padding:0 16px}
+#adm .empty{padding:24px;text-align:center;color:var(--mut);border:1px dashed var(--line);border-radius:12px}
+#adm .err{color:#c0392b}
+@media(max-width:860px){#adm .v,#adm .row2{grid-template-columns:minmax(0,1fr)}#adm .ph{grid-template-columns:90px minmax(0,1fr)}#adm .ph img{width:90px;height:64px}#adm .ph .acts{grid-column:1/-1;justify-content:flex-start}#adm .tabs{top:96px}}
+</style>
+</head>
+<body>
+<div class="banner" id="banner" hidden></div>
+<header>
+  <b><span class="ar">للبيع · البشارة 1</span><span class="en">For sale · Al-Bashara 1</span></b>
+  <button class="lang" id="lang" type="button">English</button>
+</header>
+
+<section class="hero">
+  <img id="heroImg" src="exterior.jpg" alt="الواجهة الخارجية للفيلا" fetchpriority="high">
+  <span class="cap"><span class="ar">الصور ملتقطة قبل الحرب</span><span class="en">Photos taken before the war</span></span>
+</section>
+
+<section class="facts band">
+  <div class="wrap">
+    <div>
+      <h1 data-c="title"></h1>
+      <p data-c="intro"></p>
+      <div class="price" data-c="price"></div>
+      <div class="cta">
+        <a class="btn wa" data-act="whatsapp" href="#contact"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.2 1.4 2.5 1.6.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg><span class="ar">واتساب</span><span class="en">WhatsApp</span></a>
+        <a class="btn call" data-act="call" href="#contact"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg><span class="ar">اتصال</span><span class="en">Call</span></a>
+        <a class="btn ghost" href="#form"><span class="ar">اطلب معلومات</span><span class="en">Request info</span></a>
+      </div>
+    </div>
+    <div class="stats">
+      <div><strong>440 <span class="ar">م²</span><span class="en">m²</span></strong><span class="ar">مساحة الأرض</span><span class="en">Plot area</span></div>
+      <div><strong>3</strong><span class="ar">واجهات</span><span class="en">Façades</span></div>
+      <div><strong>5</strong><span class="ar">طوابق – الأساس مهيأ لها</span><span class="en">Floors the foundation is built for</span></div>
+      <div><strong>9 <span class="ar">سيارات</span><span class="en">cars</span></strong><span class="ar">سعة مواقف البدروم</span><span class="en">Basement parking capacity</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="floors">
+  <div class="wrap floors">
+    <div>
+      <h2><span class="ar">التقسيم الداخلي</span><span class="en">Layout</span></h2>
+      <div class="fl"><h3><span class="ar">الدور الثاني</span><span class="en">Second floor</span></h3>
+        <ul class="ar"><li>5 غرف + صالتين + مطبخ صغير</li><li>شرفة كبيرة 4×4 + 3 بلكونات أخرى</li></ul>
+        <ul class="en"><li>5 rooms + 2 halls + small kitchen</li><li>Large 4×4 terrace + 3 more balconies</li></ul></div>
+      <div class="fl"><h3><span class="ar">الدور الأول</span><span class="en">First floor</span></h3>
+        <ul class="ar"><li>4 غرف + موزع + مطبخ</li></ul>
+        <ul class="en"><li>4 rooms + hallway + kitchen</li></ul></div>
+      <div class="fl"><h3><span class="ar">البدروم</span><span class="en">Basement</span></h3>
+        <ul class="ar"><li>مواقف تتسع لـ 9 سيارات، مع مزلقان للسيارات</li><li>غرفة كبيرة مغلقة</li></ul>
+        <ul class="en"><li>Parking for 9 cars, with a car ramp</li><li>Large enclosed room</li></ul></div>
+      <div class="fl"><h3><span class="ar">الحوش</span><span class="en">Courtyard</span></h3>
+        <ul class="ar"><li>مدخل لسيارتين بباب يعمل بالريموت كنترول</li><li>6 حمامات داخلية + حمام بالحوش</li></ul>
+        <ul class="en"><li>2-car entrance with remote-controlled gate</li><li>6 indoor bathrooms + 1 in the courtyard</li></ul></div>
+    </div>
+    <svg class="sec" viewBox="0 0 480 400" style="direction:ltr" role="img" aria-label="Building section">
+      <defs><pattern id="h" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#a5784a" stroke-width="2"/></pattern></defs>
+      <g fill="none" stroke-dasharray="6 5" stroke-width="1.5" style="stroke:var(--mut)"><rect x="80" y="16" width="220" height="34"/><rect x="80" y="50" width="220" height="34"/><rect x="80" y="84" width="220" height="34"/></g>
+      <rect x="80" y="126" width="220" height="60" fill="#d9a352"/>
+      <rect x="80" y="186" width="220" height="60" fill="#e8b96a"/>
+      <rect x="54" y="178" width="26" height="6" fill="#a8763f"/>
+      <g fill="#1c1814" opacity=".75"><rect x="106" y="140" width="28" height="30"/><rect x="176" y="140" width="28" height="30"/><rect x="246" y="140" width="28" height="30"/><rect x="106" y="200" width="28" height="30"/><rect x="176" y="200" width="28" height="30"/><rect x="246" y="200" width="28" height="30"/></g>
+      <rect x="80" y="246" width="220" height="70" fill="url(#h)" opacity=".35"/>
+      <rect x="80" y="246" width="220" height="70" fill="none" stroke-width="2" style="stroke:var(--ink)"/>
+      <path d="M22 246 L80 246 L80 310 Z" opacity=".45" style="fill:var(--mut)"/>
+      <g transform="translate(98 278)"><rect width="30" height="13" rx="4" style="fill:var(--ink)"/><rect x="6" y="-6" width="18" height="8" rx="3" style="fill:var(--ink)"/></g><g transform="translate(140 278)"><rect width="30" height="13" rx="4" style="fill:var(--ink)"/><rect x="6" y="-6" width="18" height="8" rx="3" style="fill:var(--ink)"/></g><g transform="translate(182 278)"><rect width="30" height="13" rx="4" style="fill:var(--ink)"/><rect x="6" y="-6" width="18" height="8" rx="3" style="fill:var(--ink)"/></g><g transform="translate(224 278)"><rect width="30" height="13" rx="4" style="fill:var(--ink)"/><rect x="6" y="-6" width="18" height="8" rx="3" style="fill:var(--ink)"/></g><g transform="translate(262 278)"><rect width="30" height="13" rx="4" style="fill:var(--ink)"/><rect x="6" y="-6" width="18" height="8" rx="3" style="fill:var(--ink)"/></g>
+      <line x1="10" y1="246" x2="470" y2="246" stroke-width="3" style="stroke:var(--ink)"/>
+      <g stroke-width="1" style="stroke:var(--mut)"><line x1="304" y1="67" x2="332" y2="67"/><line x1="304" y1="156" x2="332" y2="156"/><line x1="304" y1="216" x2="332" y2="216"/><line x1="304" y1="281" x2="332" y2="281"/></g>
+      <g font-size="15" font-weight="600">
+        <text x="340" y="72" class="ar" font-weight="400" style="fill:var(--mut)">قابلة للتعلية</text><text x="340" y="72" class="en" font-weight="400" style="fill:var(--mut)">Room to build up</text>
+        <text x="340" y="161" class="ar">الدور الثاني</text><text x="340" y="161" class="en">Second floor</text>
+        <text x="340" y="221" class="ar">الدور الأول</text><text x="340" y="221" class="en">First floor</text>
+        <text x="340" y="278" class="ar">البدروم</text><text x="340" y="278" class="en">Basement</text>
+      </g>
+      <g font-size="13.5" style="fill:var(--mut)">
+        <text x="340" y="298" class="ar">يتسع لـ 9 سيارات</text><text x="340" y="298" class="en">Parking for 9 cars</text>
+        <text x="40" y="336" text-anchor="middle" class="ar">مزلقان</text><text x="40" y="336" text-anchor="middle" class="en">Ramp</text>
+        <text x="190" y="372" text-anchor="middle" font-size="15" class="ar">الأساس مؤسس لخمسة طوابق</text><text x="190" y="372" text-anchor="middle" font-size="15" class="en">Foundation built for five floors</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="band" id="plans" hidden>
+  <div class="wrap">
+    <h2><span class="ar">تصوّر ثلاثي الأبعاد ومخطط الأرض</span><span class="en">3D view and site plan</span></h2>
+    <div class="plans">
+      <div class="m3d" id="m3d">
+        <span class="hint"><span class="ar">اسحب للتدوير</span><span class="en">Drag to rotate</span></span>
+        <div class="tools">
+          <button type="button" data-m="spin" aria-pressed="true"><span class="ar">تدوير</span><span class="en">Rotate</span></button>
+          <button type="button" data-m="ghost" aria-pressed="false"><span class="ar">الطوابق الممكن إضافتها</span><span class="en">Floors that can be added</span></button>
+          <button type="button" data-m="aerial"><span class="ar">من الأعلى</span><span class="en">From above</span></button>
+        </div>
+      </div>
+      <div class="card" id="siteplan"></div>
+    </div>
+    <p class="note"><span class="ar">تصوّر تقريبي مبني على صور العقار ومخططات يدوية، وليس مخططاً هندسياً.</span><span class="en">An approximate impression based on photos and hand sketches, not an engineering drawing.</span></p>
+  </div>
+</section>
+
+<section class="band fin">
+  <div class="wrap">
+    <h2><span class="ar">التشطيبات</span><span class="en">Finishes</span></h2>
+    <div class="grid">
+      <div class="it"><b class="ar">سقوف وزخارف جبصية</b><b class="en">Gypsum ceilings and décor</b></div>
+      <div class="it"><b class="ar">أطقم حمامات ألمانية</b><b class="en">German bathroom fittings</b></div>
+      <div class="it"><b class="ar">سيراميك إسباني</b><b class="en">Spanish ceramic tiles</b><small class="ar">للحمامات الداخلية</small><small class="en">In indoor bathrooms</small></div>
+      <div class="it"><b class="ar">دواليب مطبخ تركية فاخرة</b><b class="en">Premium Turkish kitchen cabinets</b></div>
+      <div class="it"><b class="ar">أبواب تركية</b><b class="en">Turkish doors</b><small class="ar">داخلية وخارجية</small><small class="en">Interior and exterior</small></div>
+      <div class="it"><b class="ar">قريلات تركية</b><b class="en">Turkish window grilles</b></div>
+      <div class="it"><b class="ar">شبكة داتا</b><b class="en">Data network</b></div>
+      <div class="it"><b class="ar">شبكة تأريض (Earth) كاملة</b><b class="en">Full earthing network</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap site">
+    <div>
+      <h2><span class="ar">الموقع</span><span class="en">Location</span></h2>
+      <p class="ar">في المربع الذهبي بالبشارة 1. العقار بثلاث واجهات، ويحدّه من الجهة الشرقية مساحة خضراء بمساحة 230 م².</p>
+      <p class="en">In the Golden Block of Al-Bashara 1. The property has three façades and is bordered on the east by a 230 m² green space.</p>
+    </div>
+    <svg class="sec" viewBox="0 0 420 240" style="direction:ltr" role="img" aria-label="Site plan">
+      <rect x="40" y="30" width="210" height="180" fill="#d9a352" style="stroke:var(--ink)" stroke-width="2"/>
+      <rect x="250" y="30" width="130" height="180" fill="#6fa56b" opacity=".85"/>
+      <g fill="#4d8a4b"><circle cx="285" cy="70" r="14"/><circle cx="340" cy="95" r="18"/><circle cx="295" cy="160" r="16"/><circle cx="350" cy="175" r="12"/></g>
+      <text x="145" y="118" text-anchor="middle" font-size="22" font-weight="700" fill="#1c1814" class="ar">440 م²</text><text x="145" y="118" text-anchor="middle" font-size="22" font-weight="700" fill="#1c1814" class="en">440 m²</text>
+      <text x="315" y="128" text-anchor="middle" font-size="14" font-weight="600" fill="#10230f" class="ar">مساحة خضراء</text><text x="315" y="128" text-anchor="middle" font-size="14" font-weight="600" fill="#10230f" class="en">Green space</text>
+      <text x="315" y="146" text-anchor="middle" font-size="13" fill="#10230f" class="ar">230 م²</text><text x="315" y="146" text-anchor="middle" font-size="13" fill="#10230f" class="en">230 m²</text>
+      <g transform="translate(400 40)"><path d="M0 -14 L6 6 L0 2 L-6 6 Z" style="fill:var(--ink)"/><text y="22" text-anchor="middle" font-size="12">N</text></g>
+      <text x="380" y="228" text-anchor="end" font-size="12" style="fill:var(--mut)" class="ar">شرق →</text><text x="380" y="228" text-anchor="end" font-size="12" style="fill:var(--mut)" class="en">East →</text>
+    </svg>
+  </div>
+</section>
+
+<section class="band" id="gallery">
+  <div class="wrap">
+    <h2><span class="ar">الصور</span><span class="en">Photos</span></h2>
+    <div class="gal" id="gal"></div>
+    <p class="note" data-c="note"></p>
+  </div>
+</section>
+
+<section class="band fin" id="contact">
+  <div class="wrap contact">
+    <div id="form">
+      <h2><span class="ar">اطلب معلومات أو موعد معاينة</span><span class="en">Request info or a viewing</span></h2>
+      <form class="lead" id="f" novalidate>
+        <label for="nm"><span class="ar">الاسم</span><span class="en">Name</span></label>
+        <input id="nm" name="name" autocomplete="name" maxlength="80" required>
+        <label for="ph"><span class="ar">رقم الهاتف / واتساب</span><span class="en">Phone / WhatsApp</span></label>
+        <input id="ph" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" dir="ltr" required>
+        <label for="ms"><span class="ar">رسالتك (اختياري)</span><span class="en">Message (optional)</span></label>
+        <textarea id="ms" name="message" maxlength="600"></textarea>
+        <button class="btn send" type="submit"><span class="ar">إرسال</span><span class="en">Send</span></button>
+        <p class="note" id="err" hidden></p>
+        <p class="note"><span class="ar">نستخدم بياناتك فقط للتواصل معك بخصوص هذا العقار.</span><span class="en">We only use your details to contact you about this property.</span></p>
+      </form>
+      <div class="ok" id="ok" hidden>
+        <h3><span class="ar">شكراً لك! سنتواصل معك قريباً.</span><span class="en">Thank you! We'll contact you soon.</span></h3>
+        <p><span class="ar">للرد الأسرع راسلنا على واتساب:</span><span class="en">For a faster reply, message us on WhatsApp:</span></p>
+        <a class="btn wa" data-act="whatsapp" href="#contact"><span class="ar">واتساب</span><span class="en">WhatsApp</span></a>
+      </div>
+    </div>
+    <div>
+      <h2><span class="ar">تواصل مباشرة</span><span class="en">Contact directly</span></h2>
+      <p style="margin:0"><span class="ar">واتساب / هاتف:</span><span class="en">WhatsApp / phone:</span></p>
+      <p class="num" id="num"></p>
+      <p class="num" id="num2" hidden></p>
+      <div class="cta">
+        <a class="btn wa" data-act="whatsapp" href="#contact"><span class="ar">مراسلة على واتساب</span><span class="en">Message on WhatsApp</span></a>
+        <a class="btn call" data-act="call" href="#contact"><span class="ar">اتصال</span><span class="en">Call</span></a>
+      </div>
+      <p class="note"><span class="ar">رمز زيارتك:</span><span class="en">Your visit code:</span> <b id="code" dir="ltr"></b></p>
+    </div>
+  </div>
+</section>
+
+<footer><span class="ar">فيلا للبيع – المربع الذهبي، البشارة 1. الصور ملتقطة قبل الحرب. تحسب هذه الصفحة عدد الزيارات دون جمع أي بيانات شخصية إلا ما ترسله في النموذج.</span><span class="en">Villa for sale – Golden Block, Al-Bashara 1. Photos taken before the war. This page counts visits without collecting personal data beyond what you send in the form.</span>
+<a href="#admin" class="adm-dot" aria-label="admin">•</a></footer>
+
+<div class="bar">
+  <a class="btn wa" data-act="whatsapp" href="#contact"><span class="ar">واتساب</span><span class="en">WhatsApp</span></a>
+  <a class="btn call" data-act="call" href="#contact"><span class="ar">اتصال</span><span class="en">Call</span></a>
+</div>
+
+<dialog id="dlg"><img id="big" alt=""><button class="dbtn x" type="button" data-d="x" aria-label="close">×</button><button class="dbtn pv" type="button" data-d="-1" aria-label="prev">‹</button><button class="dbtn nx" type="button" data-d="1" aria-label="next">›</button></dialog>
+
+<!-- ================= ADMIN (opens at #admin) ================= -->
+<div id="adm" hidden lang="tr">
+  <form class="login" id="aLogin">
+    <h1>Yönetim girişi</h1>
+    <p class="m">Bashara 1 ilan sitesi</p>
+    <input id="aPw" type="password" placeholder="Şifre" autocomplete="current-password" required>
+    <button class="b" type="submit">Giriş</button>
+    <a class="b o" href="#">Siteye dön</a>
+    <p class="err" id="aLerr"></p>
+  </form>
+  <div id="aApp" hidden>
+    <div class="top"><h1>Bashara 1 · Yönetim</h1><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="m" id="aUpd" style="color:#141210"></span><button class="b s" id="aRef" type="button">Yenile</button><a class="b o s" href="#">Siteyi gör</a><button class="b o s" id="aOut" type="button">Çıkış</button></div></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-t="vis" aria-selected="true">Ziyaretçiler</button>
+      <button class="tab" role="tab" data-t="txt" aria-selected="false">Numara, fiyat, yazılar</button>
+      <button class="tab" role="tab" data-t="pho" aria-selected="false">Fotoğraflar</button>
+      <button class="tab" role="tab" data-t="qr" aria-selected="false">QR ve linkler</button>
+      <button class="tab" role="tab" data-t="set" aria-selected="false">Ayarlar</button>
+    </div>
+
+    <section class="pane" data-p="vis">
+      <div class="tiles" id="vTiles"></div>
+      <div class="row2"><div><h2>Nereden geldiler</h2><div class="rows" id="vSrc"></div></div><div><h2>Kişiye özel linkler</h2><div class="rows" id="vRefs"></div></div></div>
+      <h2 style="margin-top:18px">Ziyaretçi defteri</h2>
+      <p class="m">Müşteri WhatsApp'tan yazınca mesajın sonunda 6 haneli bir kod olur (örn. K7Q2M9). O kodu buraya yazarak kişinin bütün geçmişini bulabilirsin.</p>
+      <input id="vQ" placeholder="Kod, isim, telefon, kaynak ara…">
+      <div class="chips"><button class="chip" data-f="all" aria-pressed="true">Hepsi</button><button class="chip" data-f="wa" aria-pressed="false">WhatsApp'a tıklayan</button><button class="chip" data-f="form" aria-pressed="false">Form dolduran</button><button class="chip" data-f="repeat" aria-pressed="false">2+ kez gelen</button><button class="chip" data-f="todo" aria-pressed="false">Henüz konuşulmayan</button></div>
+      <div id="vList"></div>
+    </section>
+
+    <section class="pane" data-p="txt" hidden>
+      <form id="tForm">
+        <h2>İletişim</h2>
+        <div class="row2">
+          <label class="fld"><span>WhatsApp numarası</span><input name="phone" dir="ltr" placeholder="249912345678"><small class="m">Ülke koduyla, sadece rakam. WhatsApp ve Ara butonları bu numarayı kullanır.</small></label>
+          <label class="fld"><span>İkinci numara (isteğe bağlı)</span><input name="phone2" dir="ltr" placeholder="249…"><small class="m">Sadece sayfada yazı olarak görünür.</small></label>
+        </div>
+        <h2>Fiyat</h2>
+        <div class="row2"><label class="fld"><span>Arapça</span><input name="price_ar" dir="rtl"></label><label class="fld"><span>İngilizce</span><input name="price_en"></label></div>
+        <h2>Başlık</h2>
+        <div class="row2"><label class="fld"><span>Arapça</span><input name="title_ar" dir="rtl"></label><label class="fld"><span>İngilizce</span><input name="title_en"></label></div>
+        <h2>Kısa tanıtım</h2>
+        <div class="row2"><label class="fld"><span>Arapça</span><textarea name="intro_ar" dir="rtl"></textarea></label><label class="fld"><span>İngilizce</span><textarea name="intro_en"></textarea></label></div>
+        <h2>Fotoğraf notu</h2>
+        <div class="row2"><label class="fld"><span>Arapça</span><textarea name="note_ar" dir="rtl"></textarea></label><label class="fld"><span>İngilizce</span><textarea name="note_en"></textarea></label></div>
+        <h2>Duyuru şeridi (isteğe bağlı)</h2>
+        <p class="m">Doldurursan sayfanın en üstünde mavi bir şeritte görünür (örn. "تم تخفيض السعر"). Boş bırakırsan görünmez.</p>
+        <div class="row2"><label class="fld"><span>Arapça</span><input name="banner_ar" dir="rtl"></label><label class="fld"><span>İngilizce</span><input name="banner_en"></label></div>
+        <button class="b" type="submit">Kaydet</button> <span class="m" id="tMsg"></span>
+      </form>
+    </section>
+
+    <section class="pane" data-p="pho" hidden>
+      <h2>Fotoğraflar</h2>
+      <p class="m">İlk fotoğraf sayfanın en üstündeki büyük fotoğraftır. Yüklediğin fotoğraflar otomatik küçültülür. Değişiklikler hemen kaydedilir.</p>
+      <label class="b" style="margin:8px 0 14px">Fotoğraf ekle<input type="file" id="pUp" accept="image/*" multiple hidden></label> <span class="m" id="pMsg"></span>
+      <div id="pList"></div>
+    </section>
+
+    <section class="pane" data-p="qr" hidden>
+      <h2>Genel QR (afiş, tabela, kartvizit)</h2>
+      <div class="qr"><img id="qMain" alt="QR"><div style="display:grid;gap:8px;flex:1 1 220px"><div class="link" id="qMainL"></div><a class="b" id="qMainD" download="bashara1-qr.png">QR'ı indir</a></div></div>
+      <h2 style="margin-top:22px">Özel link oluştur</h2>
+      <p class="m">Her yer için ayrı link kullanırsan ziyaretçilerin nereden geldiğini görürsün. Bir kişiye özel link verirsen o kişinin girişleri ismiyle görünür.</p>
+      <div class="row2">
+        <label class="fld"><span>Nerede kullanılacak</span><select id="qSrc"><option value="qr">Basılı QR</option><option value="facebook">Facebook</option><option value="instagram">Instagram</option><option value="whatsapp">WhatsApp grubu / durum</option><option value="email">E-posta</option><option value="sms">SMS</option><option value="other">Diğer</option></select></label>
+        <label class="fld"><span>Kişiye özel (isteğe bağlı)</span><input id="qRef" placeholder="örn. ahmed-osman"></label>
+      </div>
+      <label class="fld" style="max-width:300px"><span>Sayfa dili</span><select id="qLng"><option value="">Arapça</option><option value="en">İngilizce</option></select></label>
+      <div class="qr"><img id="qImg" alt="QR"><div style="display:grid;gap:8px;flex:1 1 220px"><div class="link" id="qLink"></div><button class="b" id="qCopy" type="button">Linki kopyala</button><a class="b o" id="qDl" download="qr.png">QR'ı indir</a></div></div>
+    </section>
+
+    <section class="pane" data-p="set" hidden>
+      <h2>3B model ve çizimler</h2>
+      <label style="display:flex;gap:10px;align-items:center;font-weight:600"><input type="checkbox" id="sPlans" style="width:22px;min-height:22px"> 3B modeli ve vaziyet planını sitede göster</label>
+      <p class="m" id="sMsg"></p>
+      <h2 style="margin-top:22px">Şifre değiştir</h2>
+      <form id="sPw" style="display:flex;flex-wrap:wrap;gap:8px;max-width:520px"><input id="sNp" type="password" placeholder="Yeni şifre (en az 10 karakter)" minlength="10" autocomplete="new-password" style="flex:1 1 220px"><button class="b">Değiştir</button></form>
+      <p class="m" id="sPwM"></p>
+      <h2 style="margin-top:22px">Bu cihaz</h2>
+      <p class="m">Giriş yaptığın cihazlar ziyaretçi sayısına eklenmez, böylece kendi girişlerin istatistiği bozmaz.</p>
+    </section>
+  </div>
+</div>
+
+<script src="qrcode.js"></script>
+<script src="plans.js"></script>
+<script>
+{
+const SB = "https://pnfflrqknringcklzjif.supabase.co";
+const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBuZmZscnFrbnJpbmdja2x6amlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUyNjM1NjYsImV4cCI6MjExMDgzOTU2Nn0.NO_GdklAGTW7t4E9askU-2T6hBo3tfK0bHASR_HeKrM";
+const H = { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" };
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ls = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } };
+const ss = (k, v) => { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { return null; } };
+
+/* ---------- content (defaults, then live from the database) ---------- */
+let S = {
+  phone: "", phone2: "", price_ar: "السعر عند التواصل", price_en: "Price on request",
+  title_ar: "فيلا فاخرة للبيع في المربع الذهبي – البشارة 1", title_en: "Luxury villa for sale in the Golden Block – Al-Bashara 1",
+  intro_ar: "تصميم عصري وتقسيم شرعي، ثلاث واجهات، ويحدها من الشرق مساحة خضراء 230 م².", intro_en: "Modern design with a family-private layout, three façades, and a 230 m² green space on its eastern side.",
+  note_ar: "الصور ملتقطة قبل الحرب. للاستفسار عن الحالة الحالية للعقار تواصل معنا.", note_en: "Photos were taken before the war. Contact us about the property's current condition.",
+  banner_ar: "", banner_en: ""
+};
+let PHOTOS = [{ url: "exterior.jpg", ar: "الواجهة", en: "Façade" }, { url: "living.jpg", ar: "الصالة", en: "Living room" }];
+let PLANS = { show: false };
+
+/* ---------- visitor identity + tracking ---------- */
+const q = new URLSearchParams(location.search);
+const AB = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+let vid = ls("b1_vid");
+if (!/^[A-Z0-9]{6}$/.test(vid || "")) { vid = Array.from(crypto.getRandomValues(new Uint8Array(6)), b => AB[b % AB.length]).join(""); ls("b1_vid", vid); }
+const clean = (s, n) => (s || "").toString().trim().slice(0, n) || null;
+const src = clean(q.get("src") || q.get("utm_source") || (document.referrer ? (() => { try { return new URL(document.referrer).hostname.replace(/^www\./, ""); } catch (e) { return "link"; } })() : "direct"), 40);
+const ref = clean(q.get("r"), 60);
+const ua = navigator.userAgent;
+const device = /iPhone/.test(ua) ? "iPhone" : /iPad/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac/.test(ua) ? "Mac" : /Linux/.test(ua) ? "Linux" : "Other";
+let lang = (q.get("lang") || ls("b1_lang") || "ar") === "en" ? "en" : "ar";
+const isAdminDevice = () => ls("b1_admin_dev") === "1";
+const post = (table, body) => fetch(SB + "/rest/v1/" + table, { method: "POST", keepalive: true, headers: { ...H, Prefer: "return=minimal" }, body: JSON.stringify(body) });
+function track(kind) { if (isAdminDevice()) return; post("events", { vid, kind, src, ref, lang, device, referrer: clean(document.referrer, 200) }).catch(() => {}); }
+
+/* ---------- public render ---------- */
+const digits = s => (s || "").replace(/\D/g, "");
+const waText = () => lang === "ar" ? `مرحباً، أستفسر عن الفيلا المعروضة للبيع في البشارة 1. (رمز: ${vid})` : `Hello, I'm interested in the villa for sale in Al-Bashara 1. (code: ${vid})`;
+function renderText() {
+  $$("[data-c]").forEach(e => { e.textContent = S[e.dataset.c + "_" + lang] || ""; });
+  const bn = S["banner_" + lang]; $("#banner").hidden = !bn; $("#banner").textContent = bn || "";
+  const p = digits(S.phone), p2 = digits(S.phone2);
+  $$('[data-act="whatsapp"]').forEach(a => { if (p) { a.href = `https://wa.me/${p}?text=${encodeURIComponent(waText())}`; a.target = "_blank"; a.rel = "noopener"; } else { a.href = "#contact"; a.removeAttribute("target"); } });
+  $$('[data-act="call"]').forEach(a => { a.href = p ? "tel:+" + p : "#contact"; });
+  $("#num").textContent = p ? "+" + p : (lang === "ar" ? "يُضاف قريباً" : "Coming soon");
+  $("#num2").hidden = !p2; $("#num2").textContent = p2 ? "+" + p2 : "";
+}
+function renderPhotos() {
+  const list = PHOTOS.length ? PHOTOS : [{ url: "exterior.jpg" }];
+  $("#heroImg").src = list[0].url;
+  $("#gal").innerHTML = list.map((p, i) => `<button type="button" data-i="${i}"><img src="${esc(p.url)}" alt="${esc(p[lang] || "")}" loading="${i < 2 ? "eager" : "lazy"}">${p[lang] ? `<span>${esc(p[lang])}</span>` : ""}</button>`).join("");
+}
+let model = null, modelLoading = false;
+function renderPlans() {
+  $("#plans").hidden = !PLANS.show;
+  if (!PLANS.show) return;
+  if (window.Plans) Plans.site($("#siteplan"), lang);
+  if (!model && !modelLoading) {
+    const io = new IntersectionObserver(es => {
+      if (!es[0].isIntersecting) return; io.disconnect(); modelLoading = true;
+      import("./model3d.js").then(m => { model = m.mountModel($("#m3d"), { onSpin: v => $('[data-m="spin"]').setAttribute("aria-pressed", v) }); if (!model) $("#m3d").innerHTML = '<p style="padding:20px">3D view is not supported on this device.</p>'; }).catch(() => {});
+    }, { rootMargin: "200px" });
+    io.observe($("#m3d"));
+  }
+}
+$("#m3d").addEventListener("click", e => {
+  const b = e.target.closest("[data-m]"); if (!b || !model) return;
+  if (b.dataset.m === "spin") { const v = b.getAttribute("aria-pressed") !== "true"; model.setSpin(v); b.setAttribute("aria-pressed", v); }
+  if (b.dataset.m === "ghost") { const v = b.getAttribute("aria-pressed") !== "true"; model.setGhost(v); b.setAttribute("aria-pressed", v); }
+  if (b.dataset.m === "aerial") model.view("aerial");
+});
+function applyLang() {
+  const r = document.documentElement;
+  r.lang = lang; r.dir = lang === "ar" ? "rtl" : "ltr";
+  r.classList.toggle("L-ar", lang === "ar"); r.classList.toggle("L-en", lang === "en");
+  $("#lang").textContent = lang === "ar" ? "English" : "العربية";
+  $("#nm").placeholder = lang === "ar" ? "الاسم الكامل" : "Full name"; $("#ph").placeholder = "+249 …";
+  renderText(); renderPhotos(); if (PLANS.show && window.Plans) Plans.site($("#siteplan"), lang);
+}
+$("#code").textContent = vid;
+applyLang();
+async function loadContent() {
+  try {
+    const r = await fetch(SB + "/rest/v1/site_content?select=key,value", { headers: H, cache: "no-store" });
+    if (!r.ok) return;
+    (await r.json()).forEach(({ key, value }) => { if (key === "settings") S = { ...S, ...value }; if (key === "photos" && Array.isArray(value)) PHOTOS = value; if (key === "plans") PLANS = value || PLANS; });
+    renderText(); renderPhotos(); renderPlans();
+  } catch (e) {}
+}
+loadContent();
+
+$("#lang").addEventListener("click", () => { lang = lang === "ar" ? "en" : "ar"; ls("b1_lang", lang); applyLang(); });
+document.addEventListener("click", e => { const a = e.target.closest("[data-act]"); if (a) track(a.dataset.act); });
+
+const dlg = $("#dlg"); let cur = 0;
+const show = i => { const list = PHOTOS.length ? PHOTOS : [{ url: "exterior.jpg" }]; cur = (i + list.length) % list.length; $("#big").src = list[cur].url; };
+$("#gal").addEventListener("click", e => { const b = e.target.closest("[data-i]"); if (!b) return; show(+b.dataset.i); track("photo"); dlg.showModal && dlg.showModal(); });
+dlg.addEventListener("click", e => { const d = e.target.dataset.d; if (e.target === dlg || d === "x") dlg.close(); else if (d) show(cur + (lang === "ar" ? -d : +d)); });
+
+$("#f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const name = $("#nm").value.trim(), phone = $("#ph").value.trim(), message = $("#ms").value.trim(), err = $("#err");
+  if (!name || digits(phone).length < 6) { err.hidden = false; err.textContent = lang === "ar" ? "الرجاء كتابة الاسم ورقم هاتف صحيح." : "Please enter your name and a valid phone number."; return; }
+  const btn = e.target.querySelector("button"); btn.disabled = true;
+  try {
+    const r = await post("leads", { vid, name: name.slice(0, 80), phone: phone.slice(0, 30), message: message.slice(0, 600) || null, src, ref });
+    if (!r.ok) throw new Error(r.status);
+    track("form"); e.target.hidden = true; $("#ok").hidden = false;
+  } catch (x) { err.hidden = false; err.textContent = lang === "ar" ? "تعذّر الإرسال، يرجى المحاولة مرة أخرى أو مراسلتنا على واتساب." : "Couldn't send. Please try again or message us on WhatsApp."; btn.disabled = false; }
+});
+if (!ss("b1_seen") && location.hash !== "#admin") { ss("b1_seen", "1"); track("visit"); }
+
+/* ================= ADMIN ================= */
+let akey = ss("b1_admin"), V = [], vf = "all", started = false, timer = 0;
+const STATUS = { new: "Yeni", talked: "Konuşuldu", interested: "İlgileniyor", viewing: "Görüşme ayarlandı", no: "İlgilenmiyor" };
+const SRCN = { qr: "Basılı QR", facebook: "Facebook", instagram: "Instagram", whatsapp: "WhatsApp paylaşımı", email: "E-posta", sms: "SMS", direct: "Direkt", other: "Diğer", link: "Link" };
+async function rpc(fn, args) {
+  const r = await fetch(`${SB}/rest/v1/rpc/${fn}`, { method: "POST", headers: H, body: JSON.stringify(args) });
+  const t = await r.text();
+  if (!r.ok) throw new Error(/bad key/.test(t) ? "Şifre yanlış." : "Sunucu hatası: " + t.slice(0, 140));
+  return t ? JSON.parse(t) : null;
+}
+const ago = d => { const s = (Date.now() - new Date(d)) / 1000; return s < 60 ? "az önce" : s < 3600 ? Math.round(s / 60) + " dk önce" : s < 86400 ? Math.round(s / 3600) + " saat önce" : Math.round(s / 86400) + " gün önce"; };
+const dt = d => new Date(d).toLocaleString("tr-TR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+
+function route() {
+  const on = location.hash === "#admin";
+  $("#adm").hidden = !on; document.body.style.overflow = on ? "hidden" : "";
+  if (on && akey && !started) startAdmin(); else if (on && !akey) { $("#aLogin").hidden = false; $("#aApp").hidden = true; setTimeout(() => $("#aPw").focus(), 50); }
+}
+addEventListener("hashchange", route); route();
+
+$("#aLogin").addEventListener("submit", async e => {
+  e.preventDefault(); const k = $("#aPw").value; $("#aLerr").textContent = "Kontrol ediliyor…";
+  try { await rpc("admin_visitors", { p_key: k }); akey = k; ss("b1_admin", k); ls("b1_admin_dev", "1"); $("#aLerr").textContent = ""; startAdmin(); }
+  catch (x) { $("#aLerr").textContent = x.message; }
+});
+function logout(msg) { akey = null; started = false; ss("b1_admin", null); clearInterval(timer); $("#aApp").hidden = true; $("#aLogin").hidden = false; $("#aLerr").textContent = msg || ""; }
+$("#aOut").addEventListener("click", () => logout());
+function startAdmin() {
+  started = true; $("#aLogin").hidden = true; $("#aApp").hidden = false;
+  fillText(); renderPhotoAdmin(); makeQR(); $("#sPlans").checked = !!PLANS.show;
+  loadV(); clearInterval(timer); timer = setInterval(loadV, 60000);
+}
+$$(".tab").forEach(t => t.addEventListener("click", () => {
+  $$(".tab").forEach(x => x.setAttribute("aria-selected", x === t)); $$(".pane").forEach(p => p.hidden = p.dataset.p !== t.dataset.t);
+  if (t.dataset.t === "txt") fillText(); if (t.dataset.t === "pho") renderPhotoAdmin(); if (t.dataset.t === "qr") makeQR();
+}));
+$("#aRef").addEventListener("click", () => { loadV(); loadContent().then(() => { fillText(); renderPhotoAdmin(); }); });
+
+/* visitors */
+async function loadV() {
+  $("#aUpd").textContent = "yükleniyor…";
+  try { V = await rpc("admin_visitors", { p_key: akey }) || []; V = V.filter(v => v.vid !== vid); renderV(); $("#aUpd").textContent = "Güncellendi " + new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }); }
+  catch (e) { if (/Şifre/.test(e.message)) return logout(e.message); $("#aUpd").textContent = e.message; }
+}
+function bars(el, counts, label) {
+  const ent = Object.entries(counts).sort((a, b) => b[1] - a[1]), max = Math.max(1, ...ent.map(e => e[1]));
+  el.innerHTML = ent.length ? ent.map(([k, n]) => `<div><span>${esc(label(k))}</span><i style="width:${(n / max * 100).toFixed(1)}%"></i><em>${n}</em></div>`).join("") : `<p class="m">Henüz veri yok.</p>`;
+}
+function renderV() {
+  const T = [[V.length, "Farklı ziyaretçi"], [V.reduce((a, v) => a + +v.visits, 0), "Toplam ziyaret"], [V.filter(v => v.visits > 1).length, "2+ kez gelen"], [V.filter(v => v.whatsapp > 0).length, "WhatsApp'a tıklayan"], [V.filter(v => v.lead).length, "Form dolduran"], [V.filter(v => ["talked", "interested", "viewing"].includes(v.status)).length, "Konuşulan"]];
+  $("#vTiles").innerHTML = T.map(([n, l]) => `<div class="tile"><b>${n}</b><span>${l}</span></div>`).join("");
+  const sc = {}, rc = {}; V.forEach(v => { (v.srcs.length ? v.srcs : ["direct"]).forEach(s => sc[s] = (sc[s] || 0) + 1); v.refs.forEach(r => rc[r] = (rc[r] || 0) + 1); });
+  bars($("#vSrc"), sc, k => SRCN[k] || k); bars($("#vRefs"), rc, k => k);
+  const qq = $("#vQ").value.trim().toLowerCase();
+  const list = V.filter(v => {
+    if (vf === "wa" && !(v.whatsapp > 0)) return false; if (vf === "form" && !v.lead) return false;
+    if (vf === "repeat" && !(v.visits > 1)) return false; if (vf === "todo" && v.status && v.status !== "new") return false;
+    return !qq || [v.vid, v.lead?.name, v.lead?.phone, ...v.srcs, ...v.refs, v.note].join(" ").toLowerCase().includes(qq);
+  });
+  $("#vList").innerHTML = list.length ? list.map(v => {
+    const ph = v.lead ? digits(v.lead.phone) : "";
+    return `<article class="v${v.lead || v.whatsapp > 0 || v.visits > 2 ? " hot" : ""}" data-vid="${esc(v.vid)}">
+      <div><div class="code">${esc(v.vid)}</div><div class="m">${esc(v.device || "?")}${v.country ? " · " + esc(v.country) : ""} · ${v.lang === "en" ? "İngilizce" : "Arapça"}</div><div class="m">İlk: ${dt(v.first_seen)} · Son: ${ago(v.last_seen)}</div>
+        <div class="tags">${v.srcs.map(s => `<span class="tag">${esc(SRCN[s] || s)}</span>`).join("")}${v.refs.map(r => `<span class="tag">👤 ${esc(r)}</span>`).join("")}${v.whatsapp ? `<span class="tag w">WhatsApp'ı açtı</span>` : ""}${v.lead ? `<span class="tag f">Form doldurdu</span>` : ""}</div></div>
+      <div><div class="nums"><div><b>${v.visits}</b><span>ziyaret</span></div><div><b>${v.whatsapp}</b><span>WhatsApp</span></div><div><b>${v.calls}</b><span>arama</span></div><div><b>${v.photos}</b><span>foto</span></div></div>
+        ${v.lead ? `<div class="lead"><bdi><b>${esc(v.lead.name)}</b></bdi> · <a href="https://wa.me/${ph}" target="_blank" rel="noopener" dir="ltr">${esc(v.lead.phone)}</a>${v.lead.message ? `<div><bdi>${esc(v.lead.message)}</bdi></div>` : ""}<div class="m">${dt(v.lead.at)}</div></div>` : ""}</div>
+      <div class="ed"><select aria-label="Durum">${Object.entries(STATUS).map(([k, l]) => `<option value="${k}"${(v.status || "new") === k ? " selected" : ""}>${l}</option>`).join("")}</select>
+        <textarea placeholder="Not: kim olduğu, ne konuşuldu…">${esc(v.note || "")}</textarea><button class="b o s sv" type="button">Kaydet</button></div>
+    </article>`; }).join("") : `<div class="empty">${V.length ? "Bu filtreye uyan ziyaretçi yok." : "Henüz ziyaret yok. Linki veya QR'ı paylaştıkça burada görünecek."}</div>`;
+}
+$("#vList").addEventListener("click", async e => {
+  const b = e.target.closest(".sv"); if (!b) return;
+  const c = b.closest("[data-vid]"), id = c.dataset.vid, st = c.querySelector("select").value, nt = c.querySelector("textarea").value;
+  b.disabled = true; b.textContent = "Kaydediliyor…";
+  try { await rpc("admin_set_note", { p_key: akey, p_vid: id, p_status: st, p_note: nt }); const v = V.find(x => x.vid === id); v.status = st; v.note = nt; b.textContent = "Kaydedildi ✓"; } catch (x) { b.textContent = "Hata – tekrar dene"; }
+  setTimeout(() => { b.disabled = false; b.textContent = "Kaydet"; renderV(); }, 1100);
+});
+$$("#adm .chip").forEach(c => c.addEventListener("click", () => { vf = c.dataset.f; $$("#adm .chip").forEach(x => x.setAttribute("aria-pressed", x === c)); renderV(); }));
+$("#vQ").addEventListener("input", renderV);
+
+/* texts */
+function fillText() { const f = $("#tForm"); Object.keys(S).forEach(k => { if (f.elements[k]) f.elements[k].value = S[k] || ""; }); }
+$("#tForm").addEventListener("submit", async e => {
+  e.preventDefault(); const f = e.target, next = { ...S };
+  [...f.elements].forEach(el => { if (el.name) next[el.name] = el.value.trim(); });
+  next.phone = digits(next.phone); next.phone2 = digits(next.phone2);
+  $("#tMsg").textContent = "Kaydediliyor…";
+  try { await rpc("admin_save_content", { p_key: akey, p_name: "settings", p_value: next }); S = next; renderText(); fillText(); $("#tMsg").textContent = "Kaydedildi ✓ Sitede hemen görünür."; }
+  catch (x) { $("#tMsg").textContent = x.message; }
+});
+
+/* photos */
+async function savePhotos(msg) {
+  $("#pMsg").textContent = "Kaydediliyor…";
+  try { await rpc("admin_save_content", { p_key: akey, p_name: "photos", p_value: PHOTOS }); renderPhotos(); renderPhotoAdmin(); $("#pMsg").textContent = msg || "Kaydedildi ✓"; }
+  catch (x) { $("#pMsg").textContent = x.message; }
+}
+function renderPhotoAdmin() {
+  $("#pList").innerHTML = PHOTOS.length ? PHOTOS.map((p, i) => `<div class="ph" data-i="${i}"><img src="${esc(p.url)}" alt="">
+    <div><div class="row2"><input data-k="ar" dir="rtl" placeholder="Açıklama (Arapça)" value="${esc(p.ar || "")}"><input data-k="en" placeholder="Açıklama (İngilizce)" value="${esc(p.en || "")}"></div><div class="m" style="margin-top:4px">${i === 0 ? "★ Kapak fotoğrafı" : (i + 1) + ". sırada"}</div></div>
+    <div class="acts"><button class="b o s" data-a="up" type="button" ${i ? "" : "disabled"}>↑</button><button class="b o s" data-a="down" type="button" ${i < PHOTOS.length - 1 ? "" : "disabled"}>↓</button><button class="b o s" data-a="cover" type="button" ${i ? "" : "disabled"}>Kapak yap</button><button class="b o s" data-a="del" type="button" style="color:#c0392b;border-color:#c0392b">Sil</button></div></div>`).join("") : `<div class="empty">Fotoğraf yok.</div>`;
+}
+$("#pList").addEventListener("change", e => { const k = e.target.dataset.k; if (!k) return; const i = +e.target.closest("[data-i]").dataset.i; PHOTOS[i][k] = e.target.value.trim(); savePhotos(); });
+$("#pList").addEventListener("click", async e => {
+  const b = e.target.closest("[data-a]"); if (!b) return; const i = +b.closest("[data-i]").dataset.i, a = b.dataset.a;
+  if (a === "up") [PHOTOS[i - 1], PHOTOS[i]] = [PHOTOS[i], PHOTOS[i - 1]];
+  if (a === "down") [PHOTOS[i + 1], PHOTOS[i]] = [PHOTOS[i], PHOTOS[i + 1]];
+  if (a === "cover") PHOTOS.unshift(PHOTOS.splice(i, 1)[0]);
+  if (a === "del") {
+    if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Emin misin?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "Sil"; }, 3000); return; }
+    const [gone] = PHOTOS.splice(i, 1);
+    if (gone.path) fetch(`${SB}/functions/v1/admin-photo`, { method: "POST", headers: H, body: JSON.stringify({ key: akey, action: "delete", path: gone.path }) }).catch(() => {});
+  }
+  savePhotos();
+});
+async function shrink(file) {
+  const img = await createImageBitmap(file);
+  const s = Math.min(1, 2000 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+  c.width = Math.round(img.width * s); c.height = Math.round(img.height * s); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", 0.85).split(",")[1];
+}
+$("#pUp").addEventListener("change", async e => {
+  const files = [...e.target.files]; e.target.value = ""; let n = 0;
+  for (const f of files) {
+    $("#pMsg").textContent = `Yükleniyor ${++n}/${files.length}…`;
+    try {
+      const data = await shrink(f);
+      const r = await fetch(`${SB}/functions/v1/admin-photo`, { method: "POST", headers: H, body: JSON.stringify({ key: akey, action: "upload", contentType: "image/jpeg", data }) });
+      const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status);
+      PHOTOS.push({ url: j.url, path: j.path, ar: "", en: "" });
+    } catch (x) { $("#pMsg").textContent = "Yüklenemedi: " + f.name; await new Promise(r => setTimeout(r, 1500)); }
+  }
+  await savePhotos(`${files.length} fotoğraf eklendi ✓ İstersen açıklama yaz.`);
+});
+
+/* QR */
+const base = () => location.origin + location.pathname.replace(/index\.html$/, "");
+function qrPng(text, cell = 10) {
+  const qr = qrcode(0, "M"); qr.addData(text); qr.make();
+  const n = qr.getModuleCount(), m = 4, c = document.createElement("canvas"); c.width = c.height = (n + m * 2) * cell;
+  const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.fillStyle = "#000";
+  for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (qr.isDark(r, k)) g.fillRect((k + m) * cell, (r + m) * cell, cell, cell);
+  return c.toDataURL("image/png");
+}
+function makeQR() {
+  if (!window.qrcode) return;
+  const main = base() + "?src=qr"; $("#qMainL").textContent = main; const d = qrPng(main, 16); $("#qMain").src = d; $("#qMainD").href = d;
+  const p = new URLSearchParams(); p.set("src", $("#qSrc").value);
+  const r = $("#qRef").value.trim().replace(/\s+/g, "-"); if (r) p.set("r", r); if ($("#qLng").value) p.set("lang", "en");
+  const url = base() + "?" + p.toString(); $("#qLink").textContent = url;
+  const d2 = qrPng(url, 12); $("#qImg").src = d2; $("#qDl").href = d2; $("#qDl").download = `qr-${$("#qSrc").value}${r ? "-" + r : ""}.png`;
+}
+["#qSrc", "#qRef", "#qLng"].forEach(s => $(s).addEventListener("input", makeQR));
+$("#qCopy").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("#qLink").textContent); $("#qCopy").textContent = "Kopyalandı ✓"; } catch (e) { $("#qCopy").textContent = "Linki elle seç"; } setTimeout(() => $("#qCopy").textContent = "Linki kopyala", 1500); });
+
+/* settings */
+$("#sPlans").addEventListener("change", async e => {
+  $("#sMsg").textContent = "Kaydediliyor…";
+  try { PLANS = { ...PLANS, show: e.target.checked }; await rpc("admin_save_content", { p_key: akey, p_name: "plans", p_value: PLANS }); renderPlans(); $("#sMsg").textContent = e.target.checked ? "Sitede gösteriliyor ✓" : "Siteden gizlendi ✓"; }
+  catch (x) { $("#sMsg").textContent = x.message; }
+});
+$("#sPw").addEventListener("submit", async e => {
+  e.preventDefault(); const np = $("#sNp").value;
+  if (np.length < 10) return $("#sPwM").textContent = "En az 10 karakter olmalı.";
+  try { await rpc("admin_change_key", { p_key: akey, p_new: np }); akey = np; ss("b1_admin", np); $("#sNp").value = ""; $("#sPwM").textContent = "Şifre değişti ✓ Yeni şifreyi bir yere not et."; }
+  catch (x) { $("#sPwM").textContent = x.message; }
+});
+}
+</script>
+</body>
+</html>
