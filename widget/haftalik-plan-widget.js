@@ -636,13 +636,23 @@ async function main() {
   if (act === 'login') { await loginFlow(); return; }
   if (act === 'logout') { logout(); return; }
   const data = await loadData(now);
-  const w = build(act, data, now);
-  if (act === 'accessoryRectangular') await w.presentAccessoryRectangular();
-  else if (act === 'accessoryInline') await w.presentAccessoryInline();
-  else if (act === 'accessoryCircular') await w.presentAccessoryCircular();
-  else if (act === 'small') await w.presentSmall();
-  else if (act === 'large') await w.presentLarge();
-  else await w.presentMedium();
+  // Bazı Scriptable sürümleri kilit ekranı önizlemesini desteklemiyor: o zaman ana ekran önizlemesi göster
+  const present = {
+    accessoryRectangular: 'presentAccessoryRectangular', accessoryInline: 'presentAccessoryInline',
+    accessoryCircular: 'presentAccessoryCircular', small: 'presentSmall', large: 'presentLarge', medium: 'presentMedium',
+  }[act];
+  try {
+    const w = build(act, data, now);
+    if (typeof w[present] !== 'function') throw new Error('desteklenmiyor');
+    await w[present]();
+  } catch (e) {
+    const n = new Alert();
+    n.title = 'Önizleme açılamadı';
+    n.message = 'Bu Scriptable sürümü kilit ekranı önizlemesini göstermiyor. Widget kilit ekranında yine de çalışır. Scriptable\'ı App Store\'dan güncellemeyi dene.\n\nAyrıntı: ' + (e && e.message || e);
+    n.addAction('Ana ekran önizlemesini göster');
+    n.addCancelAction('Kapat');
+    if ((await n.present()) === 0) await build('medium', data, now).presentMedium();
+  }
 }
 
 await main();
