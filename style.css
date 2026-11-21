@@ -349,3 +349,22 @@ dialog h2 { margin: 0 0 18px; font-size: 18px; letter-spacing: -.01em; }
 .people-list > small { width: 100%; color: var(--muted); font-size: 12px; }
 .people-list .chip.person { padding: 3px 10px 3px 3px; }
 .people-list .chip small { display: inline; }
+/* ================= ekip lideri ================= */
+.leader-badge {
+  display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; vertical-align: middle;
+  font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  background: var(--primary-soft); color: var(--primary-soft-text);
+}
+.leader-hint { color: var(--primary); font-weight: 500; }
+.admin { margin: 4px 0 8px; border-top: 1px solid var(--border); padding-top: 14px; }
+.admin-title { font-size: 13px; color: var(--text-2); font-weight: 600; margin-bottom: 6px; }
+.admin-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; flex-wrap: wrap; }
+.admin-row .avatar { width: 24px; height: 24px; font-size: 10px; border-width: 0; box-shadow: none; }
+.admin-name { flex: 1; min-width: 100px; font-size: 14px; font-weight: 500; }
+label.radio { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; }
+label.radio:has(input:checked) { border-color: var(--primary); background: var(--primary-soft); }
+label.radio input { -webkit-appearance: radio; appearance: auto; display: inline-block; flex: none; width: 18px; height: 18px; margin: 2px 0 0; padding: 0; accent-color: var(--primary); }
+label.radio b { display: block; color: var(--text); }
+label.radio small { display: block; color: var(--muted); font-weight: 400; margin-top: 2px; }
+.btn.danger-fill { background: var(--danger); border-color: var(--danger); }
+.btn.danger-fill:hover { background: var(--danger); filter: brightness(.92); }

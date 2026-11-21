@@ -107,6 +107,9 @@ async function loadProfile() {
   const { data: all } = await sb.from('profiles').select('*').order('full_name');
   state.profiles = all || [state.profile];
 }
+const isLeader = () => !!(state.profile?.is_member && state.profile?.is_leader);
+// lider ekipteki herkesin "Ekip de görsün" planlarını düzenleyebilir
+const canEdit = p => p.user_id === state.profile.id || (isLeader() && !p.is_private);
 const profileOf = id => state.profiles.find(p => p.id === id) || { full_name: '?', color: '#64748b' };
 // plan sahibi ya da plana dahil edilmiş kişi mi?
 const involves = (p, uid) => p.user_id === uid || (p.participants || []).includes(uid);
@@ -314,7 +317,7 @@ async function renderTeam() {
     const list = occ.filter(o => involves(o, m.id) && sameDay(o.occStart, day));
     const doingNow = occ.find(o => involves(o, m.id) && o.occStart <= now && o.occEnd > now);
     html += `<div class="card member"><div class="card-head">
-      <h3><span class="avatar sm" style="background:${m.color}">${esc(initials(m.full_name))}</span>${esc(m.full_name)}</h3>
+      <h3><span class="avatar sm" style="background:${m.color}">${esc(initials(m.full_name))}</span>${esc(m.full_name)}${m.is_leader ? ' <span class="leader-badge" title="Ekip lideri">Lider</span>' : ''}</h3>
       ${m.id === state.profile.id ? '<span class="count">sen</span>' : ''}
       ${doingNow ? `<span class="now-doing"><span>${esc(doingNow.title)}</span></span>` : ''}
     </div>
@@ -349,7 +352,7 @@ function bindCommon() {
     const p = all.find(x => x.id === b.dataset.plan);
     if (!p) return;
     const occStart = new Date(Number(b.dataset.occ));
-    if (p.user_id === state.profile.id) openPlanDialog(p, null, occStart); else openView(p, occStart);
+    if (canEdit(p)) openPlanDialog(p, null, occStart); else openView(p, occStart);
   }));
   const jf = document.getElementById('joinForm');
   jf?.addEventListener('submit', async e => {
@@ -408,7 +411,9 @@ function openPlanDialog(plan, dateStr) {
   editing = plan;
   planForm.reset();
   document.getElementById('planError').hidden = true;
-  document.getElementById('planDialogTitle').textContent = plan ? 'Planı düzenle' : 'Yeni plan';
+  const other = plan && plan.user_id !== state.profile.id;
+  document.getElementById('planDialogTitle').textContent = !plan ? 'Yeni plan' : other ? `${profileOf(plan.user_id).full_name} adlı üyenin planı` : 'Planı düzenle';
+  document.getElementById('leaderHint').hidden = !other;
   document.getElementById('deletePlanBtn').hidden = !plan;
   document.getElementById('seriesHint').hidden = !(plan && plan.repeat !== 'none');
   if (plan) {
@@ -470,7 +475,8 @@ planForm.addEventListener('submit', async e => {
 document.getElementById('cancelPlanBtn').addEventListener('click', () => planDialog.close());
 document.getElementById('deletePlanBtn').addEventListener('click', async () => {
   if (!editing) return;
-  const msg = editing.repeat !== 'none' ? 'Bu tekrarlanan planın tüm tekrarları silinecek. Emin misin?' : 'Bu plan silinsin mi?';
+  const whose = editing.user_id !== state.profile.id ? ` (${profileOf(editing.user_id).full_name} adlı üyenin planı)` : '';
+  const msg = (editing.repeat !== 'none' ? 'Bu tekrarlanan planın tüm tekrarları silinecek. Emin misin?' : 'Bu plan silinsin mi?') + whose;
   if (!confirm(msg)) return;
   const { error } = await sb.from('plans').delete().eq('id', editing.id);
   if (error) { toast('Silinemedi: ' + error.message); return; }
@@ -525,12 +531,65 @@ async function openProfileDialog() {
   if (p.is_member) {
     const { data: code } = await sb.rpc('get_team_code');
     tb.innerHTML = `<label>Ekip kodu (yeni üyelere ver)<div class="teamcode">${esc(code || '—')}</div></label>
-      <p class="hint">Giriş e-postan: ${esc(state.session.user.email)}</p>`;
+      <p class="hint">Giriş e-postan: ${esc(state.session.user.email)}${isLeader() ? ' · <b>Ekip liderisin</b>' : ''}</p>
+      ${isLeader() ? membersAdmin() : ''}`;
+    bindMembersAdmin();
   } else {
     tb.innerHTML = '<p class="hint">Henüz ekipte değilsin. Ana sayfadaki kutuya ekip kodunu gir.</p>';
   }
   profileDialog.showModal();
 }
+/* ===== lider: ekip üyelerini yönet ===== */
+function membersAdmin() {
+  const others = state.profiles.filter(m => m.is_member && m.id !== state.profile.id);
+  return `<div class="admin"><div class="admin-title">Ekip üyeleri</div>
+    ${others.length ? others.map(m => `<div class="admin-row">
+      <span class="avatar xs" style="background:${m.color}">${esc(initials(m.full_name))}</span>
+      <span class="admin-name">${esc(m.full_name)}${m.is_leader ? ' <span class="leader-badge">Lider</span>' : ''}</span>
+      <button type="button" class="btn sm ghost" data-lead="${m.id}" data-val="${!m.is_leader}">${m.is_leader ? 'Liderliği kaldır' : 'Lider yap'}</button>
+      ${m.is_leader ? '' : `<button type="button" class="btn sm danger" data-remove="${m.id}">Çıkar</button>`}
+    </div>`).join('') : '<p class="hint">Ekipte senden başka kimse yok.</p>'}
+  </div>`;
+}
+function bindMembersAdmin() {
+  const tb = document.getElementById('teamBox');
+  tb.querySelectorAll('[data-lead]').forEach(b => b.addEventListener('click', async () => {
+    const m = profileOf(b.dataset.lead), val = b.dataset.val === 'true';
+    if (!confirm(val ? `${m.full_name} ekip lideri olsun mu? Üyeleri çıkarabilir ve ekip planlarını düzenleyebilir.` : `${m.full_name} artık lider olmasın mı?`)) return;
+    const { error } = await sb.rpc('set_leader', { target: m.id, val });
+    if (error) { toast('Olmadı: ' + error.message); return; }
+    toast(val ? 'Lider yapıldı' : 'Liderlik kaldırıldı');
+    await loadProfile(); refreshMembersAdmin();
+  }));
+  tb.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => openRemoveDialog(profileOf(b.dataset.remove))));
+}
+function refreshMembersAdmin() {
+  const box = document.querySelector('#teamBox .admin');
+  if (!box) return;
+  box.outerHTML = membersAdmin();
+  bindMembersAdmin();
+}
+const removeDialog = document.getElementById('removeDialog');
+let removing = null;
+function openRemoveDialog(m) {
+  removing = m;
+  document.getElementById('removeName').textContent = m.full_name;
+  document.getElementById('removeForm').reset();
+  removeDialog.showModal();
+}
+document.getElementById('cancelRemoveBtn').addEventListener('click', () => removeDialog.close());
+document.getElementById('removeForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!removing) return;
+  const deleteAccount = document.getElementById('removeForm').mode.value === 'delete';
+  if (deleteAccount && !confirm(`${removing.full_name} hesabı ve tüm planları kalıcı olarak silinecek. Geri alınamaz. Emin misin?`)) return;
+  const { error } = await sb.rpc('remove_member', { target: removing.id, delete_account: deleteAccount });
+  if (error) { toast('Olmadı: ' + error.message); return; }
+  removeDialog.close();
+  toast(deleteAccount ? 'Hesap silindi' : 'Ekipten çıkarıldı');
+  await loadProfile(); refreshMembersAdmin(); render();
+});
+
 profileForm.addEventListener('submit', async e => {
   e.preventDefault();
   const { error } = await sb.from('profiles').update({ full_name: profileForm.full_name.value.trim(), color: pickedColor }).eq('id', state.profile.id);
