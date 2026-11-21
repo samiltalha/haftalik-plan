@@ -2,9 +2,9 @@
    Usage: Plans.site(el, lang), Plans.foot(el, lang), Plans.model(canvasWrap, lang) */
 (function () {
   const T = {
-    tr: { house: "Ev", green: "Yeşil alan", greenE: "Yeşil alan (230 m²)", garage: "Garaj girişi", door: "Kapı", wc: "Avlu tuvaleti", base: "Bodrum girişi (rampa)", yard: "Avlu", ramp: "Rampa", foot: "Ev oturumu (taslak)", rotate: "Döndür", ghost: "Eklenebilecek katlar", drag: "Sürükleyerek çevir" },
-    ar: { house: "الفيلا", green: "مساحة خضراء", greenE: "مساحة خضراء 230 م²", garage: "مدخل السيارات", door: "باب", wc: "حمام الحوش", base: "مدخل البدروم (مزلقان)", yard: "الحوش", ramp: "مزلقان", foot: "مسقط المبنى (تقريبي)", rotate: "تدوير", ghost: "الطوابق الممكن إضافتها", drag: "اسحب للتدوير" },
-    en: { house: "Villa", green: "Green area", greenE: "Green space 230 m²", garage: "Car entrance", door: "Door", wc: "Courtyard WC", base: "Basement entrance (ramp)", yard: "Courtyard", ramp: "Ramp", foot: "Building footprint (approx.)", rotate: "Rotate", ghost: "Floors that can be added", drag: "Drag to rotate" }
+    tr: { house: "Ev", green: "Yeşil alan", greenE: "Yeşil alan (230 m²)", neigh: "Komşu arsası", garage: "Garaj girişi", door: "Kapı", wc: "Avlu tuvaleti", base: "Bodrum girişi (rampa)", yard: "Avlu", ramp: "Rampa", foot: "Ev oturumu (taslak)", rotate: "Döndür", ghost: "Eklenebilecek katlar", drag: "Sürükleyerek çevir" },
+    ar: { house: "الفيلا", green: "مساحة خضراء", greenE: "مساحة خضراء 230 م²", neigh: "أرض الجار", garage: "مدخل السيارات", door: "باب", wc: "حمام الحوش", base: "مدخل البدروم (مزلقان)", yard: "الحوش", ramp: "مزلقان", foot: "مسقط المبنى (تقريبي)", rotate: "تدوير", ghost: "الطوابق الممكن إضافتها", drag: "اسحب للتدوير" },
+    en: { house: "Villa", green: "Green area", greenE: "Green space 230 m²", neigh: "Neighbour's plot", garage: "Car entrance", door: "Door", wc: "Courtyard WC", base: "Basement entrance (ramp)", yard: "Courtyard", ramp: "Ramp", foot: "Building footprint (approx.)", rotate: "Rotate", ghost: "Floors that can be added", drag: "Drag to rotate" }
   };
   const C = { ink: "var(--ink,#1c1814)", mut: "var(--mut,#6c6259)", sand: "#d9a352", sandL: "#efd3a0", green: "#7fb377", greenD: "#4d8a4b", wall: "#1c1814", ramp: "#b9ab9a" };
   const ns = "http://www.w3.org/2000/svg";
@@ -23,23 +23,23 @@
     const posts = [[155, 280], [275, 280], [460, 280], [520, 280], [100, 925], [100, 830], [985, 1030], [985, 1215]]
       .map(([x, y]) => `<rect x="${x - 9}" y="${y - 9}" width="18" height="18" fill="${C.wall}"/>`).join("");
     const chev = [0, 1, 2, 3].map(i => `<path d="M${935 - i * 38} 1095 l-22 32 l22 32" fill="none" stroke="${C.ink}" stroke-width="4" opacity=".55"/>`).join("");
-    el.innerHTML = `<svg viewBox="30 150 1090 1200" style="direction:ltr;width:100%;height:auto;display:block" font-family="inherit" role="img" aria-label="Site plan">
+    el.innerHTML = `<svg viewBox="30 25 1090 1310" style="direction:ltr;width:100%;height:auto;display:block" font-family="inherit" role="img" aria-label="Site plan">
       <rect x="100" y="280" width="885" height="1020" fill="${C.sandL}" opacity=".35"/>
-      <rect x="800" y="280" width="185" height="540" fill="var(--bg,#fbf8f3)"/><path d="M806 280 H1095 V820 H806 Z" fill="${C.green}" opacity=".55"/>${[[870, 360], [1050, 560], [1050, 380], [880, 680], [1040, 740]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="22" fill="${C.greenD}" opacity=".8"/>`).join("")}<g transform="translate(1060 210)"><circle r="34" fill="${C.ink}"/><path d="M0 -24 L13 8 L0 2 L-13 8 Z" fill="#fff"/><text y="27" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">N</text></g>
+      <rect x="800" y="280" width="185" height="540" fill="var(--bg,#fbf8f3)"/><rect x="100" y="70" width="700" height="200" fill="${C.green}" opacity=".6"/>${[[340, 120], [470, 210], [600, 115], [720, 200], [420, 130]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="22" fill="${C.greenD}" opacity=".8"/>`).join("")}<rect x="160" y="70" width="110" height="205" fill="#d9c3a0"/><rect x="806" y="70" width="290" height="750" fill="none" stroke="${C.mut}" stroke-width="2" stroke-dasharray="10 8"/><g transform="translate(1060 960)"><circle r="34" fill="${C.ink}"/><path d="M0 -24 L13 8 L0 2 L-13 8 Z" fill="#fff"/><text y="27" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">N</text></g>
       <rect x="305" y="515" width="175" height="100" rx="6" fill="${C.green}"/><rect x="600" y="525" width="155" height="115" rx="6" fill="${C.green}"/>
       ${[[340, 555], [440, 590], [640, 560], [720, 610]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="20" fill="${C.greenD}"/>`).join("")}
       <polygon points="${OUT.map(([x, y]) => [542.5 + (x - 605) * 0.604, 970 + (y - 1037.5) * 0.604].map(v => v.toFixed(1)).join(",")).join(" ")}" fill="${C.sand}" stroke="${C.wall}" stroke-width="5" stroke-linejoin="round"/>
       <rect x="800" y="820" width="180" height="125" fill="#fff" stroke="${C.wall}" stroke-width="5"/>
       <rect x="800" y="1040" width="180" height="170" fill="${C.ramp}" opacity=".6"/>${chev}
       <g stroke="${C.wall}" stroke-width="${W * 2}" stroke-linecap="square">${walls}</g>${posts}
-      <path d="M215 210 v52" stroke="${C.ink}" stroke-width="4" marker-end="url(#ar)"/>
+      <path d="M215 72 v190" stroke="${C.ink}" stroke-width="4" marker-end="url(#ar)"/>
       <path d="M1070 1127 h-60" stroke="${C.ink}" stroke-width="4" marker-end="url(#ar)"/>
       <defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="${C.ink}"/></marker></defs>
-      ${lbl(215, 195, t(lang, "garage"), { fs: 24 })}
+      ${lbl(215, 55, t(lang, "garage"), { fs: 24 })}
       ${lbl(490, 262, t(lang, "door"), { fs: 20, fw: 500, fill: C.mut })}
       ${lbl(70, 878, t(lang, "door"), { fs: 20, fw: 500, fill: C.mut, rot: -90 })}
       ${lbl(392, 655, t(lang, "green"), { fs: 20, fw: 500 })}${lbl(677, 665, t(lang, "green"), { fs: 20, fw: 500 })}
-      ${lbl(560, 1000, t(lang, "house"), { fs: 40, fw: 800 })}${lbl(950, 560, t(lang, "greenE"), { fs: 22, fw: 600, rot: 90 })}
+      ${lbl(560, 1000, t(lang, "house"), { fs: 40, fw: 800 })}${lbl(520, 178, t(lang, "greenE"), { fs: 24, fw: 700 })}${lbl(950, 450, t(lang, "neigh"), { fs: 20, fw: 500, fill: C.mut })}
       ${lbl(890, 890, t(lang, "wc"), { fs: 20 })}
       ${lbl(890, 1245, t(lang, "base").split(" (")[0], { fs: 20 })}${lbl(890, 1268, t(lang, "ramp"), { fs: 17, fw: 500, fill: C.mut })}
       ${lbl(200, 1080, t(lang, "yard"), { fs: 22, fw: 500, fill: C.mut, rot: -90 })}
