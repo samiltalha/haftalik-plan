@@ -368,3 +368,16 @@ label.radio b { display: block; color: var(--text); }
 label.radio small { display: block; color: var(--muted); font-weight: 400; margin-top: 2px; }
 .btn.danger-fill { background: var(--danger); border-color: var(--danger); }
 .btn.danger-fill:hover { background: var(--danger); filter: brightness(.92); }
+
+/* ================= toplantı ================= */
+.meeting { margin-bottom: 4px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.seg label { margin: 0; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; text-align: center; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; color: var(--text); font-weight: 500; }
+.seg input:checked + span { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-soft-text); }
+.seg input:focus-visible + span { box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent); }
+.remind-hint { color: var(--primary); }
+.meet-info { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 14px; word-break: break-word; }
+.meet-info a { color: var(--primary); font-weight: 600; }
+.open-link { display: inline-block; margin-top: 6px; color: var(--primary); font-weight: 600; font-size: 13px; }

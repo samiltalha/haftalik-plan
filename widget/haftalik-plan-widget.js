@@ -38,7 +38,7 @@ const KC = 'haftalik-plan-widget';
 
 const CAT_COLOR = {
   okul: '#3b82f6', is: '#8b5cf6', calisma: '#06b6d4', spor: '#22c55e',
-  kisisel: '#f97316', dogum: '#ec4899', genel: '#94a3b8',
+  kisisel: '#f97316', toplanti: '#eab308', dogum: '#ec4899', genel: '#94a3b8',
 };
 const DAYS_SHORT = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
 

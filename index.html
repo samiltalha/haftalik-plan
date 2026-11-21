@@ -38,6 +38,21 @@
     <label>Kategori
       <select name="category" id="categorySelect"></select>
     </label>
+    <div id="meetingWrap" class="meeting" hidden>
+      <div class="people-label">Toplantı şekli</div>
+      <div class="seg">
+        <label><input type="radio" name="meeting_type" value="online" checked><span>💻 Online</span></label>
+        <label><input type="radio" name="meeting_type" value="yuz_yuze"><span>🤝 Yüz yüze</span></label>
+      </div>
+      <label id="linkWrap">Toplantı linki
+        <input name="meeting_link" type="url" maxlength="500" placeholder="https://meet.google.com/...">
+        <a id="openLink" class="open-link" target="_blank" rel="noopener" hidden>Toplantıya katıl ↗</a>
+      </label>
+      <label id="placeWrap" hidden>Toplantı yeri
+        <input name="meeting_place" maxlength="300" placeholder="ör. Ofis, 2. kat toplantı odası">
+      </label>
+    </div>
+    <p class="hint remind-hint" id="remindHint" hidden></p>
     <div>
       <label>Tekrar
         <select name="repeat">
