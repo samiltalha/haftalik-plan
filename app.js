@@ -135,6 +135,23 @@ function meetInfo(p) {
   const u = safeUrl(p.meeting_link);
   return u ? `<div class="meet-info">💻 <a href="${esc(u)}" target="_blank" rel="noopener">Toplantıya katıl</a></div>` : '<div class="meet-info">💻 Online</div>';
 }
+// yapılacaklar listesi
+const todosOf = p => Array.isArray(p?.todos) ? p.todos : [];
+const todoBadge = p => { const t = todosOf(p); return t.length ? `<span class="todo-badge">☑ ${t.filter(x => x.done).length}/${t.length}</span>` : ''; };
+const canTick = p => involves(p, state.profile.id) || canEdit(p);
+async function tickTodo(p, idx, done) {
+  const { data, error } = await sb.rpc('set_todo_done', { plan: p.id, idx, val: done });
+  if (error) { toast('İşaretlenemedi: ' + error.message); return false; }
+  p.todos = data;
+  return true;
+}
+function todoListHtml(todos, { editable, tickable }) {
+  return todos.map((t, i) => `<li class="${t.done ? 'done' : ''}">
+    <input type="checkbox" data-tick="${i}" ${t.done ? 'checked' : ''} ${tickable ? '' : 'disabled'} aria-label="${esc(t.text)}">
+    <span class="tx">${esc(t.text)}</span>
+    ${editable ? `<button type="button" class="rm" data-rm="${i}" aria-label="Sil">×</button>` : ''}
+  </li>`).join('');
+}
 const initials = name => (name || '?').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toLocaleUpperCase('tr');
 
 /* ================= rendering ================= */
@@ -160,6 +177,7 @@ function planItem(o, { showOwner = false, now = new Date(), viewer = state.profi
         <span class="cat"><i style="background:${cat.color}"></i>${esc(cat.short)}</span>
         ${o.repeat !== 'none' ? `<span>↻ ${REPEAT_LABEL[o.repeat]}</span>` : ''}
         ${isMeeting(o) ? (o.meeting_type === 'yuz_yuze' ? `<span>📍 ${esc(o.meeting_place || 'Yüz yüze')}</span>` : '<span>💻 Online</span>') : ''}
+        ${todoBadge(o)}
         ${withPeople(o, viewer)}
         ${mine && !o.is_private ? '<span class="shared">👥 Ekip görüyor</span>' : ''}
       </span>
@@ -445,6 +463,40 @@ function syncRepeatUI() {
   const r = planForm.repeat.value;
   document.getElementById('untilWrap').hidden = r === 'none' || r === 'yearly';
 }
+let todos = [];
+function renderTodos() {
+  document.getElementById('todoList').innerHTML = todoListHtml(todos, { editable: true, tickable: true });
+  document.getElementById('todoCount').textContent = todos.length ? `${todos.filter(t => t.done).length}/${todos.length}` : '';
+}
+function addTodo() {
+  const inp = document.getElementById('todoInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  if (todos.length >= 50) { toast('En fazla 50 madde eklenebilir'); return; }
+  todos.push({ text, done: false });
+  inp.value = '';
+  renderTodos();
+  inp.focus();
+}
+document.getElementById('todoAddBtn').addEventListener('click', addTodo);
+document.getElementById('todoInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addTodo(); } });
+document.getElementById('todoList').addEventListener('click', e => {
+  const rm = e.target.closest('[data-rm]');
+  if (rm) { todos.splice(Number(rm.dataset.rm), 1); renderTodos(); }
+});
+document.getElementById('todoList').addEventListener('change', async e => {
+  const cb = e.target.closest('[data-tick]');
+  if (!cb) return;
+  const i = Number(cb.dataset.tick);
+  todos[i].done = cb.checked;
+  renderTodos();
+  // kayıtlı plandaki mevcut madde: hemen kaydet (Kaydet'e basmaya gerek yok)
+  const saved = todosOf(editing);
+  if (editing && saved[i] && saved[i].text === todos[i].text) {
+    const ok = await tickTodo(editing, i, todos[i].done);
+    if (ok) render();
+  }
+});
 function syncMeetingUI() {
   const cat = planForm.category.value;
   const meeting = cat === 'toplanti';
@@ -454,8 +506,8 @@ function syncMeetingUI() {
   document.getElementById('placeWrap').hidden = online;
   const hint = document.getElementById('remindHint');
   hint.textContent = meeting
-    ? (online ? '✉️ Toplantıdan 15 dakika önce e-posta hatırlatması gelir.' : '✉️ Toplantıdan 1 saat önce e-posta hatırlatması gelir.')
-    : cat === 'is' ? '✉️ Plandan 1 saat önce e-posta hatırlatması gelir.' : '';
+    ? (online ? '✉️ Toplantıdan 15 dakika önce e-posta hatırlatması gelir.' : '✉️ Toplantıdan 1,5 saat önce e-posta hatırlatması gelir.')
+    : cat === 'is' ? '✉️ Plandan 1,5 saat önce e-posta hatırlatması gelir.' : '';
   hint.hidden = !hint.textContent;
   const ol = document.getElementById('openLink'), u = safeUrl(planForm.meeting_link.value.trim());
   ol.hidden = !(meeting && online && u && editing);
@@ -499,8 +551,10 @@ function openPlanDialog(plan, dateStr) {
     planForm.meeting_type.value = plan.meeting_type === 'yuz_yuze' ? 'yuz_yuze' : 'online';
     planForm.meeting_link.value = plan.meeting_link || '';
     planForm.meeting_place.value = plan.meeting_place || '';
+    todos = todosOf(plan).map(t => ({ ...t }));
   } else {
     picked = new Set();
+    todos = [];
     const now = new Date();
     planForm.date.value = dateStr || ymd(now);
     const h = Math.min(now.getHours() + 1, 22);
@@ -510,6 +564,8 @@ function openPlanDialog(plan, dateStr) {
   }
   syncRepeatUI();
   syncMeetingUI();
+  renderTodos();
+  document.getElementById('todoInput').value = '';
   renderPeoplePicker();
   planDialog.showModal();
   if (!plan) setTimeout(() => planForm.title.focus(), 50);
@@ -531,6 +587,10 @@ planForm.addEventListener('submit', async e => {
     repeat_until: f.repeat.value === 'none' || f.repeat.value === 'yearly' ? null : (f.repeat_until.value || null),
     is_private: !f.share.checked,
   };
+  // yazılı kalmış ama "Ekle"ye basılmamış madde de kaydedilsin
+  const pending = document.getElementById('todoInput').value.trim();
+  if (pending) { todos.push({ text: pending, done: false }); document.getElementById('todoInput').value = ''; }
+  if (todos.length || (editing && 'todos' in editing)) row.todos = todos;
   // toplantı alanları (sütunlar sadece toplantıda ya da önceden doluysa gönderilir)
   if (row.category === 'toplanti' || (editing && 'meeting_type' in editing)) {
     const online = f.meeting_type.value !== 'yuz_yuze';
@@ -582,7 +642,13 @@ function openView(p, occStart) {
     <p style="display:flex;gap:12px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:8px;height:8px;border-radius:50%;background:${cat.color};display:inline-block"></i>${esc(cat.name)}</span>${p.repeat !== 'none' ? `<span>↻ ${REPEAT_LABEL[p.repeat]}</span>` : ''}</p>
     ${meetInfo(p)}
     ${p.note ? `<p style="white-space:pre-wrap;margin-top:10px">${esc(p.note)}</p>` : ''}
+    ${todosOf(p).length ? `<div class="view-todos"><div class="people-label">Yapılacaklar <span class="todo-count">${todosOf(p).filter(t => t.done).length}/${todosOf(p).length}</span></div><ul class="todo-list">${todoListHtml(todosOf(p), { editable: false, tickable: canTick(p) })}</ul></div>` : ''}
     ${(p.participants || []).length ? `<div class="people-list"><small>Bu planda</small>${peopleOf(p).map(id => { const x = profileOf(id); return `<span class="chip person"><span class="avatar xs" style="background:${x.color}">${esc(initials(x.full_name))}</span>${esc(x.full_name)}${id === p.user_id ? ' <small>(ekleyen)</small>' : id === state.profile.id ? ' <small>(sen)</small>' : ''}</span>`; }).join('')}</div>` : ''}`;
+  document.querySelectorAll('#viewBody [data-tick]').forEach(cb => cb.addEventListener('change', async () => {
+    const ok = await tickTodo(p, Number(cb.dataset.tick), cb.checked);
+    if (!ok) { cb.checked = !cb.checked; return; }
+    openViewRefresh(p, occStart);
+  }));
   const leave = document.getElementById('leavePlanBtn');
   leave.hidden = !(p.participants || []).includes(state.profile.id);
   leave.onclick = async () => {
@@ -595,6 +661,7 @@ function openView(p, occStart) {
   };
   viewDialog.showModal();
 }
+function openViewRefresh(p, occStart) { viewDialog.close(); openView(p, occStart); render(); }
 document.getElementById('closeViewBtn').addEventListener('click', () => viewDialog.close());
 
 /* ================= profile dialog ================= */

@@ -17,7 +17,7 @@ Supabase → projen → **Edge Functions** → **Secrets** → iki tane ekle:
 4. Fonksiyonun **Details / Settings** sekmesinde **Verify JWT** (Enforce JWT verification) ayarını **kapat** ve kaydet.
 
 ## 4) Veritabanı
-**SQL Editor** → `bildirim.sql` dosyasının tamamını yapıştır → **Run**.
-(Önce `guncelleme.sql` çalıştırılmış olmalı.)
+**SQL Editor** → `hepsi-bir-arada.sql` dosyasının tamamını yapıştır → **Run**.
+(Bu dosya tüm güncellemeleri içerir; ayrıca guncelleme.sql / bildirim.sql / herkes-lider.sql çalıştırmana gerek yok.)
 
 Bitince Claude'a "tamam" yaz, test e-postasıyla kontrol edilecek.

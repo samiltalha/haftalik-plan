@@ -52,6 +52,29 @@ grant execute on function public.leave_plan(uuid) to authenticated;
 
 
 
+-- Yapılacaklar listesi: [{ "text": "...", "done": false }, ...]
+alter table public.plans add column if not exists todos jsonb not null default '[]';
+alter table public.plans drop constraint if exists plans_todos_check;
+alter table public.plans add constraint plans_todos_check
+  check (jsonb_typeof(todos) = 'array' and jsonb_array_length(todos) <= 50);
+
+-- Plan sahibi, plana dahil edilenler ve lider maddeleri tek tek işaretleyebilir
+create or replace function public.set_todo_done(plan uuid, idx int, val boolean)
+returns jsonb language plpgsql security definer set search_path = ''
+as $$
+declare res jsonb;
+begin
+  update public.plans p set todos = jsonb_set(p.todos, array[idx::text, 'done'], to_jsonb(val))
+  where p.id = plan and idx >= 0 and idx < jsonb_array_length(p.todos)
+    and (p.user_id = auth.uid() or auth.uid() = any(p.participants)
+         or (public.is_leader() and not p.is_private and public.user_is_member(p.user_id)))
+  returning p.todos into res;
+  if res is null then raise exception 'Bu planı işaretleme yetkin yok'; end if;
+  return res;
+end $$;
+revoke all on function public.set_todo_done(uuid, int, boolean) from public, anon;
+grant execute on function public.set_todo_done(uuid, int, boolean) to authenticated;
+
 -- 0) Lider bayrağı
 alter table public.profiles add column if not exists is_leader boolean not null default false;
 

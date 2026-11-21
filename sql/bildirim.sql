@@ -6,7 +6,7 @@
 -- Ne yapar:
 --  * Toplantı planlarına "online / yüz yüze", link ve yer alanları ekler.
 --  * Biri plana eklendiğinde eklenen kişiye e-posta sırası oluşturur.
---  * Online toplantıdan 15 dk, yüz yüze toplantıdan ve İş / Proje planından 1 saat önce
+--  * Online toplantıdan 15 dk, yüz yüze toplantıdan ve İş / Proje planından 1,5 saat önce
 --    plan sahibine ve plana dahil herkese hatırlatma e-postası sırası oluşturur.
 --  * Her pazar 10:00'da tüm ekibe "Bu haftaki ekip planını yapmayı unutmayınız" e-postası gider.
 --  * Her dakika "bildirim" Edge Function'ını çağırır; e-postaları o gönderir.
@@ -74,6 +74,12 @@ begin
          '<p style="margin:0 0 6px"><b>Toplantı:</b> Yüz yüze' || case when p.meeting_place <> '' then ' · ' || private.h(p.meeting_place) else '' end || '</p>'
        else '' end
     || case when owner <> '' then '<p style="margin:0 0 6px"><b>Ekleyen:</b> ' || private.h(owner) || '</p>' else '' end
+    || case when jsonb_array_length(coalesce(p.todos, '[]')) > 0 then
+         '<p style="margin:10px 0 4px"><b>Yapılacaklar:</b></p><ul style="margin:0;padding-left:20px">'
+         || (select string_agg('<li>' || case when (t->>'done')::boolean then '✅ <s>' || private.h(t->>'text') || '</s>' else private.h(t->>'text') end || '</li>', '' order by n)
+             from jsonb_array_elements(p.todos) with ordinality as x(t, n))
+         || '</ul>'
+       else '' end
     || case when p.note <> '' then '<p style="margin:8px 0 0;white-space:pre-wrap;color:#475569">' || private.h(p.note) || '</p>' else '' end
     || '</div>'
     || '<p style="margin:16px 0 0"><a href="https://samiltalha.github.io/haftalik-plan/" style="color:#4f46e5">Uygulamayı aç</a></p>'
@@ -132,7 +138,7 @@ begin
       and (repeat_until is null or repeat_until >= today - 1)
   loop
     lead := case when p.category = 'toplanti' and coalesce(p.meeting_type, 'online') = 'online'
-                 then interval '15 minutes' else interval '1 hour' end;
+                 then interval '15 minutes' else interval '90 minutes' end;
     sd := (p.start_at at time zone tz)::date;
     foreach d in array array[today, today + 1] loop
       if p.repeat = 'none' then
@@ -149,8 +155,8 @@ begin
       end if;
       continue when not ok or not (now() >= occ - lead and now() < occ);
       baslik := case when p.category = 'toplanti'
-                  then 'Toplantın ' || case when lead = interval '15 minutes' then '15 dakika' else '1 saat' end || ' sonra başlıyor'
-                  else 'Planın 1 saat sonra başlıyor' end;
+                  then 'Toplantın ' || case when lead = interval '15 minutes' then '15 dakika' else '1,5 saat' end || ' sonra başlıyor'
+                  else 'Planın 1,5 saat sonra başlıyor' end;
       for r in select u.id, u.email from auth.users u
                where u.id = any(array[p.user_id] || coalesce(p.participants, '{}')) and u.email is not null loop
         insert into public.email_queue (dedupe_key, to_email, subject, html)
