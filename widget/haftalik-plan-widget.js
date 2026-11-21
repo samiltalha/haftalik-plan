@@ -150,7 +150,7 @@ async function loginFlow() {
   a.addAction('Giriş yap');
   a.addCancelAction('Vazgeç');
   if (await a.presentAlert() === -1) return false;
-  const email = a.textFieldValue(0).trim(), password = a.textFieldValue(1);
+  const email = a.textFieldValue(0).trim().toLowerCase(), password = a.textFieldValue(1);
   try {
     await authRequest('password', { email, password });
     kcSet('email', email);
