@@ -243,7 +243,7 @@ async function renderToday() {
       ${summary}
       ${todayOcc.length ? todayOcc.map(o => planItem(o, { now })).join('') : `<div class="empty">Bugün için plan yok. Sağ alttaki + ile ekleyebilirsin.</div>`}
     </div>
-    <div class="card notes-card"><div class="card-head"><h3>📌 Notlarım</h3><span class="count">${notes.length ? notes.length + ' not' : ''}</span><span class="spacer"></span><button class="btn sm" id="addNoteBtn">+ Not ekle</button></div>
+    <div class="card notes-card"><div class="card-head"><h3>📔 Not Günlüğüm</h3><span class="count">${notes.length ? notes.length + ' not' : ''}</span><span class="spacer"></span><button class="btn sm" id="addNoteBtn">+ Not ekle</button></div>
       ${notes.length ? notes.map(n => noteItem(n, now)).join('') : '<div class="empty">Henüz not yok. Bir güne ya da saate not veya yapılacaklar listesi bırakabilirsin, istersen o saatte e-posta gelir.</div>'}
     </div>
     <div class="card"><div class="card-head"><h3>Yarın</h3><span class="count">${fmtDay(addDays(today, 1))}</span></div>

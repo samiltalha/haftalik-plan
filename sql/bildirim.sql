@@ -223,7 +223,7 @@ begin
     select 'note:' || r.id || ':' || extract(epoch from r.remind_at)::bigint, u.email,
       '📌 Notun: ' || r.title,
       '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:520px;margin:auto;padding:20px;color:#0f172a">'
-      || '<p style="margin:0 0 4px;color:#4f46e5;font-weight:700;font-size:13px">HAFTALIK PLAN · NOTLARIM</p>'
+      || '<p style="margin:0 0 4px;color:#4f46e5;font-weight:700;font-size:13px">HAFTALIK PLAN · NOT GÜNLÜĞÜM</p>'
       || '<h2 style="margin:0 0 14px;font-size:20px">' || private.h(r.title) || '</h2>'
       || case when r.body <> '' then '<p style="margin:0 0 10px;white-space:pre-wrap">' || private.h(r.body) || '</p>' else '' end
       || case when jsonb_array_length(r.todos) > 0 then
