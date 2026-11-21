@@ -428,3 +428,11 @@ label.radio small { display: block; color: var(--muted); font-weight: 400; margi
 .view-todos .people-label { margin-bottom: 2px; }
 .todo-badge { font-variant-numeric: tabular-nums; }
 .todo-add .btn { align-self: stretch; height: auto; }
+.detail { margin: 4px 0 14px; }
+.detail-tabs { margin-bottom: 10px; }
+.detail-tabs span { font-size: 14px; }
+.detail-tabs b { font-weight: 600; opacity: .75; }
+.detail textarea { margin: 0; }
+.detail .todos { margin: 0; }
+.view-note { margin-top: 12px; }
+.view-note p { white-space: pre-wrap; margin: 2px 0 0; }

@@ -53,14 +53,6 @@
       </label>
     </div>
     <p class="hint remind-hint" id="remindHint" hidden></p>
-    <div class="todos">
-      <div class="people-label">Yapılacaklar <span class="todo-count" id="todoCount"></span></div>
-      <ul class="todo-list" id="todoList"></ul>
-      <div class="todo-add">
-        <input id="todoInput" maxlength="200" placeholder="Listeye madde ekle" enterkeyhint="done">
-        <button type="button" class="btn sm" id="todoAddBtn">Ekle</button>
-      </div>
-    </div>
     <div>
       <label>Tekrar
         <select name="repeat">
@@ -75,9 +67,6 @@
         <input name="repeat_until" type="date">
       </label>
     </div>
-    <label>Not
-      <textarea name="note" rows="2" maxlength="1000" placeholder="İsteğe bağlı"></textarea>
-    </label>
     <div id="peopleWrap" class="people" hidden>
       <div class="people-label">Ekip arkadaşlarını dahil et</div>
       <div class="people-picker" id="peoplePicker"></div>
@@ -88,6 +77,22 @@
       <input name="share" type="checkbox">
       <span class="sw"></span>
     </label>
+    <div class="detail">
+      <div class="seg detail-tabs" role="tablist">
+        <label><input type="radio" name="detail_tab" value="note" checked><span>📝 Planını açıkla</span></label>
+        <label><input type="radio" name="detail_tab" value="todos"><span>☑ Yapılacaklar <b id="todoCount"></b></span></label>
+      </div>
+      <div id="notePanel">
+        <textarea name="note" rows="3" maxlength="1000" placeholder="Bu planda ne yapacaksın? Kısaca açıkla (isteğe bağlı)"></textarea>
+      </div>
+      <div id="todoPanel" class="todos" hidden>
+        <ul class="todo-list" id="todoList"></ul>
+        <div class="todo-add">
+          <input id="todoInput" maxlength="200" placeholder="Listeye madde ekle" enterkeyhint="done">
+          <button type="button" class="btn sm" id="todoAddBtn">Ekle</button>
+        </div>
+      </div>
+    </div>
     <p class="hint leader-hint" id="leaderHint" hidden>Ekip lideri olarak başka bir üyenin planını düzenliyorsun.</p>
     <p class="hint" id="seriesHint" hidden>Bu tekrarlanan bir plan. Değişiklik ve silme tüm tekrarları etkiler.</p>
     <p class="error" id="planError" hidden></p>

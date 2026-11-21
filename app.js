@@ -468,6 +468,11 @@ function renderTodos() {
   document.getElementById('todoList').innerHTML = todoListHtml(todos, { editable: true, tickable: true });
   document.getElementById('todoCount').textContent = todos.length ? `${todos.filter(t => t.done).length}/${todos.length}` : '';
 }
+function syncDetailTab() {
+  const t = planForm.detail_tab.value;
+  document.getElementById('notePanel').hidden = t !== 'note';
+  document.getElementById('todoPanel').hidden = t !== 'todos';
+}
 function addTodo() {
   const inp = document.getElementById('todoInput');
   const text = inp.value.trim();
@@ -479,6 +484,10 @@ function addTodo() {
   inp.focus();
 }
 document.getElementById('todoAddBtn').addEventListener('click', addTodo);
+planForm.querySelectorAll('[name=detail_tab]').forEach(r => r.addEventListener('change', () => {
+  syncDetailTab();
+  (planForm.detail_tab.value === 'note' ? planForm.note : document.getElementById('todoInput')).focus();
+}));
 document.getElementById('todoInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addTodo(); } });
 document.getElementById('todoList').addEventListener('click', e => {
   const rm = e.target.closest('[data-rm]');
@@ -566,6 +575,8 @@ function openPlanDialog(plan, dateStr) {
   syncMeetingUI();
   renderTodos();
   document.getElementById('todoInput').value = '';
+  planForm.detail_tab.value = plan && todosOf(plan).length && !plan.note ? 'todos' : 'note';
+  syncDetailTab();
   renderPeoplePicker();
   planDialog.showModal();
   if (!plan) setTimeout(() => planForm.title.focus(), 50);
@@ -641,8 +652,8 @@ function openView(p, occStart) {
     <p>${fmtDay(s)} · ${hm(s)}–${hm(e)}</p>
     <p style="display:flex;gap:12px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:8px;height:8px;border-radius:50%;background:${cat.color};display:inline-block"></i>${esc(cat.name)}</span>${p.repeat !== 'none' ? `<span>↻ ${REPEAT_LABEL[p.repeat]}</span>` : ''}</p>
     ${meetInfo(p)}
-    ${p.note ? `<p style="white-space:pre-wrap;margin-top:10px">${esc(p.note)}</p>` : ''}
-    ${todosOf(p).length ? `<div class="view-todos"><div class="people-label">Yapılacaklar <span class="todo-count">${todosOf(p).filter(t => t.done).length}/${todosOf(p).length}</span></div><ul class="todo-list">${todoListHtml(todosOf(p), { editable: false, tickable: canTick(p) })}</ul></div>` : ''}
+    ${p.note ? `<div class="view-note"><div class="people-label">📝 Planını açıkla</div><p>${esc(p.note)}</p></div>` : ''}
+    ${todosOf(p).length ? `<div class="view-todos"><div class="people-label">☑ Yapılacaklar <span class="todo-count">${todosOf(p).filter(t => t.done).length}/${todosOf(p).length}</span></div><ul class="todo-list">${todoListHtml(todosOf(p), { editable: false, tickable: canTick(p) })}</ul></div>` : ''}
     ${(p.participants || []).length ? `<div class="people-list"><small>Bu planda</small>${peopleOf(p).map(id => { const x = profileOf(id); return `<span class="chip person"><span class="avatar xs" style="background:${x.color}">${esc(initials(x.full_name))}</span>${esc(x.full_name)}${id === p.user_id ? ' <small>(ekleyen)</small>' : id === state.profile.id ? ' <small>(sen)</small>' : ''}</span>`; }).join('')}</div>` : ''}`;
   document.querySelectorAll('#viewBody [data-tick]').forEach(cb => cb.addEventListener('change', async () => {
     const ok = await tickTodo(p, Number(cb.dataset.tick), cb.checked);
