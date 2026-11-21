@@ -224,11 +224,11 @@ nav.tabs button.active { color: var(--primary); font-weight: 600; }
 .day.today .dh .num { color: var(--primary); }
 .day .dh .name { font-size: 13px; color: var(--muted); font-weight: 500; line-height: 1.2; }
 .day .dh .name b { display: block; color: var(--text); font-weight: 600; }
-.day .add {
+.day .add, .cal-list .add {
   width: 100%; border: 1px dashed var(--border-strong); background: none; color: var(--muted);
   border-radius: 8px; height: 34px; font-size: 13px; font-weight: 500; margin-top: 8px;
 }
-.day .add:hover { color: var(--primary); border-color: var(--primary); }
+.day .add:hover, .cal-list .add:hover { color: var(--primary); border-color: var(--primary); }
 
 /* ================= team ================= */
 .chips { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 4px; margin-bottom: 12px; scrollbar-width: none; }
@@ -381,3 +381,32 @@ label.radio small { display: block; color: var(--muted); font-weight: 400; margi
 .meet-info { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 14px; word-break: break-word; }
 .meet-info a { color: var(--primary); font-weight: 600; }
 .open-link { display: inline-block; margin-top: 6px; color: var(--primary); font-weight: 600; font-size: 13px; }
+
+/* ================= takvim yaprağı (Takvim sekmesi) ================= */
+.cal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 10px 10px; box-shadow: var(--shadow-sm); margin-bottom: 14px; }
+.cal-head { display: flex; align-items: center; gap: 6px; padding: 0 4px 10px; }
+.cal-head .label { flex: 1; font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.cal-head .label span { color: var(--primary); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.cal-wd { text-align: center; font-size: 11px; font-weight: 600; color: var(--muted); padding: 4px 0 6px; text-transform: uppercase; letter-spacing: .03em; }
+.cal-day {
+  appearance: none; border: 0; background: none; font: inherit; color: var(--text); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 62px; padding: 4px 0 6px;
+  border-top: 1px solid var(--border); border-radius: 0; min-width: 0;
+}
+.cal-day .n { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.cal-day.we .n { color: var(--muted); }
+.cal-day.out { opacity: .38; }
+.cal-day.today .n { color: var(--primary); font-weight: 700; }
+.cal-day.sel .n { background: var(--text); color: var(--surface); font-weight: 700; }
+.cal-day.sel.today .n { background: var(--primary); color: var(--on-primary); }
+.cal-day .cnt { font-size: 10px; font-weight: 600; color: var(--text-2); white-space: nowrap; }
+.cal-day .dots { display: flex; gap: 3px; }
+.cal-day .dots i { width: 6px; height: 6px; border-radius: 50%; }
+.cal-day:hover .n { background: var(--primary-soft); }
+.cal-day.sel:hover .n { background: var(--text); }
+.cal-day.sel.today:hover .n { background: var(--primary); }
+.cal-list .card-head .muted { color: var(--muted); font-size: 13px; }
+.cal-list .add { margin-top: 8px; }
+@media (min-width: 900px) { .cal-day { min-height: 84px; } .cal-day .cnt { font-size: 11px; } }
+@media (max-width: 360px) { .cal-day .cnt { display: none; } }

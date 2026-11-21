@@ -8,6 +8,7 @@
 --  * Biri plana eklendiğinde eklenen kişiye e-posta sırası oluşturur.
 --  * Online toplantıdan 15 dk, yüz yüze toplantıdan ve İş / Proje planından 1 saat önce
 --    plan sahibine ve plana dahil herkese hatırlatma e-postası sırası oluşturur.
+--  * Her pazar 10:00'da tüm ekibe "Bu haftaki ekip planını yapmayı unutmayınız" e-postası gider.
 --  * Her dakika "bildirim" Edge Function'ını çağırır; e-postaları o gönderir.
 
 -- 0) Gerekli eklentiler (zamanlayıcı ve HTTP çağrısı)
@@ -203,5 +204,36 @@ do $$ begin
 exception when others then null;
 end $$;
 select cron.schedule('plan-bildirim', '* * * * *', 'select public.bildirim_tick()');
+
+-- 7) Her pazar saat 10:00 (Türkiye saati): tüm ekibe haftalık plan hatırlatması
+create or replace function public.haftalik_hatirlatma()
+returns int language plpgsql security definer set search_path = ''
+as $$
+declare n int;
+begin
+  insert into public.email_queue (dedupe_key, to_email, subject, html)
+  select 'weekly:' || (now() at time zone 'Europe/Istanbul')::date || ':' || u.id,
+         u.email,
+         '📅 Bu haftaki ekip planını yapmayı unutmayınız',
+         '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:520px;margin:auto;padding:20px;color:#0f172a">'
+         || '<p style="margin:0 0 4px;color:#4f46e5;font-weight:700;font-size:13px">HAFTALIK PLAN</p>'
+         || '<h2 style="margin:0 0 12px;font-size:20px">Merhaba ' || private.h(split_part(coalesce(p.full_name, ''), ' ', 1)) || ',</h2>'
+         || '<p style="margin:0 0 16px;font-size:16px">Bu haftaki ekip planını yapmayı unutmayınız.</p>'
+         || '<p style="margin:0"><a href="https://samiltalha.github.io/haftalik-plan/" style="display:inline-block;background:#4f46e5;color:#fff;text-decoration:none;font-weight:700;padding:10px 18px;border-radius:10px">Planımı yap</a></p>'
+         || '</div>'
+  from public.profiles p join auth.users u on u.id = p.id
+  where p.is_member and u.email is not null
+  on conflict (dedupe_key) do nothing;
+  get diagnostics n = row_count;
+  return n;
+end $$;
+revoke all on function public.haftalik_hatirlatma() from public, anon, authenticated;
+
+do $$ begin
+  perform cron.unschedule('haftalik-hatirlatma');
+exception when others then null;
+end $$;
+-- 07:00 UTC = 10:00 Türkiye saati; e-postayı bir dakika içinde "plan-bildirim" görevi gönderir
+select cron.schedule('haftalik-hatirlatma', '0 7 * * 0', 'select public.haftalik_hatirlatma()');
 
 select 'Tamam: toplantı kategorisi ve e-posta bildirimleri kuruldu' as sonuc;

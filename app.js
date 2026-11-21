@@ -37,6 +37,7 @@ const state = {
   profiles: [],
   view: localGet('view') || 'today',
   weekOffset: 0,
+  calDay: null, // takvimde seçili gün (Date)
   teamDay: null, // Date
   teamFilter: 'all',
   cache: { mine: [], team: [] },
@@ -174,7 +175,7 @@ function shell(inner, title, sub) {
       <button class="avatar" id="profileBtn" title="Profil" style="background:${p.color}">${esc(initials(p.full_name))}</button>
     </header>
     <nav class="tabs">
-      ${[['today', 'Bugün'], ['week', 'Haftam'], ['team', 'Ekip']].map(([v, l]) =>
+      ${[['today', 'Bugün'], ['week', 'Takvim'], ['team', 'Ekip']].map(([v, l]) =>
         `<button data-view="${v}" class="${state.view === v ? 'active' : ''}">${ICONS[v]}<span>${l}</span></button>`).join('')}
     </nav>
     <main>${inner}</main>
@@ -235,7 +236,7 @@ async function renderToday() {
 
   $app.innerHTML = shell(html, 'Bugün ne yapacağım?', fmtDay(now));
   bindCommon();
-  document.getElementById('planNextWeek')?.addEventListener('click', () => { state.weekOffset = 1; setView('week'); });
+  document.getElementById('planNextWeek')?.addEventListener('click', () => { state.calDay = addDays(weekStart(new Date()), 7); setView('week'); });
 }
 
 function daysUntil(d) {
@@ -250,26 +251,63 @@ function groupByDay(list) {
 
 async function renderWeek() {
   const now = new Date();
-  const ws = addDays(weekStart(now), state.weekOffset * 7);
-  const we = addDays(ws, 7);
-  const plans = (await fetchPlans(ws, we)).filter(p => involves(p, state.profile.id));
+  const day = state.calDay || startOfDay(now);
+  const ms = new Date(day.getFullYear(), day.getMonth(), 1);
+  const gs = weekStart(ms); // takvim yaprağının ilk günü (Pazartesi)
+  const me = new Date(day.getFullYear(), day.getMonth() + 1, 1);
+  const weeks = Math.ceil(Math.round((me - gs) / 864e5) / 7);
+  const ge = addDays(gs, weeks * 7);
+  const plans = (await fetchPlans(gs, ge)).filter(p => involves(p, state.profile.id));
   state.cache.mine = plans;
-  const occ = expand(plans, ws, we);
-  let html = weekNav(ws, 'w');
-  html += '<div class="week compact">';
-  for (let i = 0; i < 7; i++) {
-    const d = addDays(ws, i);
-    const list = occ.filter(o => sameDay(o.occStart, d));
-    html += `<div class="day ${sameDay(d, now) ? 'today' : ''}">
-      <div class="dh"><span class="num">${d.getDate()}</span><span class="name"><b>${DAYS[d.getDay()]}</b>${MONTHS[d.getMonth()]}</span></div>
-      ${list.map(o => planItem(o, { now })).join('')}
-      <button class="add" data-add="${ymd(d)}">+ Ekle</button>
-    </div>`;
-  }
-  html += '</div>';
-  $app.innerHTML = shell(html, 'Haftam', 'Senin planların');
+  const occ = expand(plans, gs, ge);
+  const byDay = new Map();
+  for (const o of occ) { const k = ymd(o.occStart); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(o); }
+
+  const isThisMonth = now.getFullYear() === ms.getFullYear() && now.getMonth() === ms.getMonth();
+  let html = `<div class="cal">
+    <div class="cal-head">
+      <span class="label">${MONTHS[ms.getMonth()]} <span>${ms.getFullYear()}</span></span>
+      ${!isThisMonth || !sameDay(day, now) ? '<button class="btn sm" data-m="0">Bugün</button>' : ''}
+      <button class="btn icon" data-m="-1" aria-label="Önceki ay">‹</button>
+      <button class="btn icon" data-m="1" aria-label="Sonraki ay">›</button>
+    </div>
+    <div class="cal-grid">
+      ${['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(d => `<div class="cal-wd">${d}</div>`).join('')}
+      ${Array.from({ length: weeks * 7 }, (_, i) => {
+        const d = addDays(gs, i);
+        const list = byDay.get(ymd(d)) || [];
+        const cls = [d.getMonth() !== ms.getMonth() && 'out', sameDay(d, now) && 'today', sameDay(d, day) && 'sel', (d.getDay() === 0 || d.getDay() === 6) && 'we'].filter(Boolean).join(' ');
+        const dots = [...new Set(list.map(o => (CAT[o.category] || CAT.genel).color))].slice(0, 4);
+        return `<button class="cal-day ${cls}" data-cal="${ymd(d)}" aria-label="${d.getDate()} ${MONTHS[d.getMonth()]}, ${list.length ? list.length + ' plan' : 'plan yok'}">
+          <span class="n">${d.getDate()}</span>
+          ${list.length ? `<span class="cnt">${list.length} plan</span><span class="dots">${dots.map(c => `<i style="background:${c}"></i>`).join('')}</span>` : ''}
+        </button>`;
+      }).join('')}
+    </div>
+  </div>`;
+  const list = byDay.get(ymd(day)) || [];
+  html += `<div class="card cal-list">
+    <div class="card-head"><h3>${fmtDay(day)}</h3><span class="muted">${list.length ? list.length + ' plan' : ''}</span></div>
+    ${list.length ? list.map(o => planItem(o, { now })).join('') : '<div class="empty">Bu gün için plan yok.</div>'}
+    <button class="add" data-add="${ymd(day)}">+ Bu güne plan ekle</button>
+  </div>`;
+  $app.innerHTML = shell(html, 'Takvim', 'Senin planların');
   bindCommon();
-  bindWeekNav('w');
+  $app.querySelectorAll('[data-cal]').forEach(b => b.addEventListener('click', () => {
+    const [y, m, d] = b.dataset.cal.split('-').map(Number);
+    state.calDay = new Date(y, m - 1, d);
+    render();
+  }));
+  $app.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => {
+    const v = Number(b.dataset.m);
+    if (v === 0) state.calDay = startOfDay(new Date());
+    else {
+      const t = new Date(day.getFullYear(), day.getMonth() + v, 1);
+      const cur = new Date();
+      state.calDay = t.getFullYear() === cur.getFullYear() && t.getMonth() === cur.getMonth() ? startOfDay(cur) : t;
+    }
+    render();
+  }));
   $app.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => openPlanDialog(null, b.dataset.add)));
 }
 
@@ -352,9 +390,9 @@ function joinCard() {
 }
 
 function bindCommon() {
-  $app.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { state.weekOffset = 0; setView(b.dataset.view); }));
+  $app.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { state.weekOffset = 0; state.calDay = null; setView(b.dataset.view); }));
   document.getElementById('fab')?.addEventListener('click', () => {
-    const d = state.view === 'team' && state.teamDay ? state.teamDay : state.view === 'week' && state.weekOffset ? addDays(weekStart(new Date()), state.weekOffset * 7) : new Date();
+    const d = state.view === 'team' && state.teamDay ? state.teamDay : state.view === 'week' && state.calDay ? state.calDay : new Date();
     openPlanDialog(null, ymd(d));
   });
   document.getElementById('profileBtn')?.addEventListener('click', openProfileDialog);
