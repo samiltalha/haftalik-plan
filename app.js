@@ -41,6 +41,7 @@ const state = {
   teamDay: null, // Date
   teamFilter: 'all',
   cache: { mine: [], team: [] },
+  notes: [],
   channel: null,
 };
 
@@ -221,6 +222,7 @@ async function renderToday() {
   const weekEnd = addDays(weekStart(now), 7);
   const restOfWeek = expand(mine, addDays(today, 2), weekEnd);
   const special = expand(plans.filter(p => p.category === 'dogum'), addDays(today, 1), horizon).slice(0, 8);
+  const notes = await fetchNotes(today);
   const current = todayOcc.find(o => o.occStart <= now && o.occEnd > now);
   const next = todayOcc.find(o => o.occStart > now);
 
@@ -241,6 +243,9 @@ async function renderToday() {
       ${summary}
       ${todayOcc.length ? todayOcc.map(o => planItem(o, { now })).join('') : `<div class="empty">Bugün için plan yok. Sağ alttaki + ile ekleyebilirsin.</div>`}
     </div>
+    <div class="card notes-card"><div class="card-head"><h3>📌 Notlarım</h3><span class="count">${notes.length ? notes.length + ' not' : ''}</span><span class="spacer"></span><button class="btn sm" id="addNoteBtn">+ Not ekle</button></div>
+      ${notes.length ? notes.map(n => noteItem(n, now)).join('') : '<div class="empty">Henüz not yok. Bir güne ya da saate not veya yapılacaklar listesi bırakabilirsin, istersen o saatte e-posta gelir.</div>'}
+    </div>
     <div class="card"><div class="card-head"><h3>Yarın</h3><span class="count">${fmtDay(addDays(today, 1))}</span></div>
       ${tomorrowOcc.length ? tomorrowOcc.map(o => planItem(o, { now })).join('') : '<div class="empty">Yarın için plan yok.</div>'}
     </div></div><div>
@@ -254,6 +259,7 @@ async function renderToday() {
 
   $app.innerHTML = shell(html, 'Bugün ne yapacağım?', fmtDay(now));
   bindCommon();
+  bindNotes();
   document.getElementById('planNextWeek')?.addEventListener('click', () => { state.calDay = addDays(weekStart(new Date()), 7); setView('week'); });
 }
 
@@ -434,6 +440,123 @@ function bindCommon() {
 }
 
 function setView(v) { state.view = v; localSet('view', v); render(); }
+
+/* ================= notlarım ================= */
+async function fetchNotes(today) {
+  const { data, error } = await sb.from('notes').select('*')
+    .eq('user_id', state.profile.id)
+    .or(`remind_at.is.null,remind_at.gte.${today.toISOString()}`)
+    .order('remind_at', { ascending: true, nullsFirst: false }).order('created_at', { ascending: false });
+  state.notes = error ? [] : data; // tablo henüz yoksa bölüm boş görünür
+  return state.notes;
+}
+function noteWhen(n, now) {
+  if (!n.remind_at) return '';
+  const d = new Date(n.remind_at);
+  const day = sameDay(d, now) ? 'Bugün' : sameDay(d, addDays(now, 1)) ? 'Yarın' : `${d.getDate()} ${MONTHS[d.getMonth()]} ${DAYS_SHORT[d.getDay()]}`;
+  return `${day} ${hm(d)}`;
+}
+function noteItem(n, now) {
+  const t = todosOf(n);
+  const when = noteWhen(n, now);
+  const isToday = n.remind_at && sameDay(new Date(n.remind_at), now);
+  return `<div class="note ${isToday ? 'today' : ''}">
+    <button class="note-head" data-note="${n.id}">
+      <span class="title">${esc(n.title)}</span>
+      <span class="meta">${when ? `<span class="when">⏰ ${when}</span>` : '<span>📌 Tarihsiz</span>'}${t.length ? `<span>☑ ${t.filter(x => x.done).length}/${t.length}</span>` : ''}</span>
+      ${n.body ? `<span class="body-tx">${esc(n.body)}</span>` : ''}
+    </button>
+    ${t.length ? `<ul class="todo-list" data-note-todos="${n.id}">${todoListHtml(t, { editable: false, tickable: true })}</ul>` : ''}
+  </div>`;
+}
+function bindNotes() {
+  document.getElementById('addNoteBtn')?.addEventListener('click', () => openNoteDialog(null));
+  $app.querySelectorAll('[data-note]').forEach(b => b.addEventListener('click', () => openNoteDialog(state.notes.find(n => n.id === b.dataset.note))));
+  $app.querySelectorAll('[data-note-todos]').forEach(ul => ul.addEventListener('change', async e => {
+    const cb = e.target.closest('[data-tick]');
+    const n = state.notes.find(x => x.id === ul.dataset.noteTodos);
+    if (!cb || !n) return;
+    const todos2 = todosOf(n).map((t, i) => i === Number(cb.dataset.tick) ? { ...t, done: cb.checked } : t);
+    const { error } = await sb.from('notes').update({ todos: todos2 }).eq('id', n.id);
+    if (error) { toast('Kaydedilemedi: ' + error.message); cb.checked = !cb.checked; return; }
+    n.todos = todos2;
+    render();
+  }));
+}
+const noteDialog = document.getElementById('noteDialog');
+const noteForm = document.getElementById('noteForm');
+let editingNote = null;
+let nTodos = [];
+function renderNoteTodos() {
+  document.getElementById('nTodoList').innerHTML = todoListHtml(nTodos, { editable: true, tickable: true });
+  document.getElementById('nTodoCount').textContent = nTodos.length ? `${nTodos.filter(t => t.done).length}/${nTodos.length}` : '';
+}
+function syncNoteTab() {
+  const t = noteForm.note_tab.value;
+  document.getElementById('nNotePanel').hidden = t !== 'note';
+  document.getElementById('nTodoPanel').hidden = t !== 'todos';
+}
+function syncNoteRemind() {
+  const has = !!noteForm.date.value;
+  document.getElementById('noteRemindHint').textContent = has
+    ? `✉️ ${noteForm.date.value.split('-').reverse().join('.')} ${noteForm.time.value || '09:00'} saatinde sana e-posta gelir.`
+    : 'Gün seçersen o saatte sana e-posta gelir. Seçmezsen not tarihsiz kalır.';
+}
+function addNoteTodo() {
+  const inp = document.getElementById('nTodoInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  if (nTodos.length >= 50) { toast('En fazla 50 madde eklenebilir'); return; }
+  nTodos.push({ text, done: false }); inp.value = ''; renderNoteTodos(); inp.focus();
+}
+document.getElementById('nTodoAddBtn').addEventListener('click', addNoteTodo);
+document.getElementById('nTodoInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addNoteTodo(); } });
+document.getElementById('nTodoList').addEventListener('click', e => { const rm = e.target.closest('[data-rm]'); if (rm) { nTodos.splice(Number(rm.dataset.rm), 1); renderNoteTodos(); } });
+document.getElementById('nTodoList').addEventListener('change', e => { const cb = e.target.closest('[data-tick]'); if (cb) { nTodos[Number(cb.dataset.tick)].done = cb.checked; renderNoteTodos(); } });
+noteForm.querySelectorAll('[name=note_tab]').forEach(r => r.addEventListener('change', () => { syncNoteTab(); (noteForm.note_tab.value === 'note' ? noteForm.body : document.getElementById('nTodoInput')).focus(); }));
+noteForm.date.addEventListener('change', () => { if (noteForm.date.value && !noteForm.time.value) noteForm.time.value = '09:00'; syncNoteRemind(); });
+noteForm.time.addEventListener('change', syncNoteRemind);
+function openNoteDialog(n) {
+  editingNote = n;
+  noteForm.reset();
+  document.getElementById('noteError').hidden = true;
+  document.getElementById('noteDialogTitle').textContent = n ? 'Notu düzenle' : 'Yeni not';
+  document.getElementById('deleteNoteBtn').hidden = !n;
+  if (n) {
+    noteForm.title.value = n.title;
+    noteForm.body.value = n.body || '';
+    if (n.remind_at) { const d = new Date(n.remind_at); noteForm.date.value = ymd(d); noteForm.time.value = hm(d); }
+  }
+  nTodos = todosOf(n).map(t => ({ ...t }));
+  noteForm.note_tab.value = n && nTodos.length && !n.body ? 'todos' : 'note';
+  document.getElementById('nTodoInput').value = '';
+  renderNoteTodos(); syncNoteTab(); syncNoteRemind();
+  noteDialog.showModal();
+  if (!n) setTimeout(() => noteForm.title.focus(), 50);
+}
+noteForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const pending = document.getElementById('nTodoInput').value.trim();
+  if (pending) nTodos.push({ text: pending, done: false });
+  const remind = noteForm.date.value ? parseLocal(noteForm.date.value, noteForm.time.value || '09:00') : null;
+  const row = { title: noteForm.title.value.trim(), body: noteForm.body.value.trim(), todos: nTodos, remind_at: remind ? remind.toISOString() : null };
+  // hatırlatma zamanı değiştiyse e-posta yeniden gönderilsin
+  if (!editingNote || editingNote.remind_at !== row.remind_at) row.reminded_at = null;
+  const { error } = editingNote
+    ? await sb.from('notes').update(row).eq('id', editingNote.id)
+    : await sb.from('notes').insert(row);
+  if (error) { const el = document.getElementById('noteError'); el.textContent = 'Kaydedilemedi: ' + error.message; el.hidden = false; return; }
+  noteDialog.close();
+  toast(editingNote ? 'Not güncellendi' : 'Not eklendi');
+  render();
+});
+document.getElementById('cancelNoteBtn').addEventListener('click', () => noteDialog.close());
+document.getElementById('deleteNoteBtn').addEventListener('click', async () => {
+  if (!editingNote || !confirm('Bu not silinsin mi?')) return;
+  const { error } = await sb.from('notes').delete().eq('id', editingNote.id);
+  if (error) { toast('Silinemedi: ' + error.message); return; }
+  noteDialog.close(); toast('Not silindi'); render();
+});
 
 /* ================= plan dialog ================= */
 const planDialog = document.getElementById('planDialog');

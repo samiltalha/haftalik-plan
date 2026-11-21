@@ -436,3 +436,17 @@ label.radio small { display: block; color: var(--muted); font-weight: 400; margi
 .detail .todos { margin: 0; }
 .view-note { margin-top: 12px; }
 .view-note p { white-space: pre-wrap; margin: 2px 0 0; }
+
+/* ================= notlarım ================= */
+.card-head .spacer { flex: 1; }
+.notes-card .card-head { align-items: center; }
+.note { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 8px; }
+.note.today { border-color: var(--primary); background: color-mix(in srgb, var(--primary-soft) 45%, transparent); }
+.note-head { appearance: none; border: 0; background: none; padding: 0; width: 100%; text-align: left; font: inherit; color: var(--text); cursor: pointer; display: flex; flex-direction: column; gap: 3px; }
+.note-head .title { font-weight: 600; font-size: 15px; }
+.note-head .meta { display: flex; gap: 10px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.note-head .when { color: var(--primary); font-weight: 600; }
+.note-head .body-tx { font-size: 14px; color: var(--text-2); white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.note .todo-list { margin: 6px 0 0; }
+.note .todo-list li { padding: 5px 2px; }
+.row2 > label { min-width: 0; } .row2 input { width: 100%; max-width: 100%; box-sizing: border-box; }

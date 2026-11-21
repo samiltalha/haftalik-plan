@@ -105,6 +105,44 @@
   </form>
 </dialog>
 
+<dialog id="noteDialog">
+  <form id="noteForm" method="dialog">
+    <h2 id="noteDialogTitle">Yeni not</h2>
+    <label>Başlık
+      <input name="title" required maxlength="200" placeholder="ör. Malzeme siparişi">
+    </label>
+    <div class="people-label">Hatırlatma (isteğe bağlı)</div>
+    <div class="row2">
+      <label>Gün <input name="date" type="date"></label>
+      <label>Saat <input name="time" type="time"></label>
+    </div>
+    <p class="hint remind-hint" id="noteRemindHint">Gün seçersen o saatte sana e-posta gelir.</p>
+    <div class="detail">
+      <div class="seg detail-tabs">
+        <label><input type="radio" name="note_tab" value="note" checked><span>📝 Not</span></label>
+        <label><input type="radio" name="note_tab" value="todos"><span>☑ Yapılacaklar <b id="nTodoCount"></b></span></label>
+      </div>
+      <div id="nNotePanel">
+        <textarea name="body" rows="4" maxlength="2000" placeholder="Notunu yaz"></textarea>
+      </div>
+      <div id="nTodoPanel" class="todos" hidden>
+        <ul class="todo-list" id="nTodoList"></ul>
+        <div class="todo-add">
+          <input id="nTodoInput" maxlength="200" placeholder="Listeye madde ekle" enterkeyhint="done">
+          <button type="button" class="btn sm" id="nTodoAddBtn">Ekle</button>
+        </div>
+      </div>
+    </div>
+    <p class="error" id="noteError" hidden></p>
+    <div class="actions">
+      <button type="button" class="btn danger" id="deleteNoteBtn" hidden>Sil</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn ghost" id="cancelNoteBtn">Vazgeç</button>
+      <button type="submit" class="btn primary">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="viewDialog">
   <div class="view-body" id="viewBody"></div>
   <div class="actions"><button type="button" class="btn danger" id="leavePlanBtn" hidden>Plandan ayrıl</button><span class="spacer"></span><button type="button" class="btn primary" id="closeViewBtn">Tamam</button></div>

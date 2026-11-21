@@ -1,5 +1,5 @@
 -- Haftalık Plan: TÜM GÜNCELLEMELER TEK DOSYADA
--- (plana kişi ekleme, ekip lideri, yapılacaklar listesi, toplantı, e-posta bildirimleri, herkesi lider yap)
+-- (plana kişi ekleme, ekip lideri, yapılacaklar listesi, toplantı, notlarım, e-posta bildirimleri, herkesi lider yap)
 -- Supabase > SQL Editor'a tamamını yapıştırıp "Run" deyin. Mevcut planlar silinmez; tekrar çalıştırmak güvenlidir.
 
 -- Haftalık Plan: yeni özellikler için TEK SEFERLİK güncelleme
@@ -172,6 +172,7 @@ order by p.is_leader desc, p.created_at;
 --  * Online toplantıdan 15 dk, yüz yüze toplantıdan ve İş / Proje planından 1,5 saat önce
 --    plan sahibine ve plana dahil herkese hatırlatma e-postası sırası oluşturur.
 --  * Her pazar 10:00'da tüm ekibe "Bu haftaki ekip planını yapmayı unutmayınız" e-postası gider.
+--  * "Notlarım": kişisel not / yapılacaklar; seçilen saatte sahibine e-posta gider.
 --  * Her dakika "bildirim" Edge Function'ını çağırır; e-postaları o gönderir.
 
 -- 0) Gerekli eklentiler (zamanlayıcı ve HTTP çağrısı)
@@ -352,12 +353,63 @@ revoke all on function public.claim_emails(int) from public, anon, authenticated
 grant execute on function public.claim_emails(int) to service_role;
 grant select, update on table public.email_queue to service_role;
 
+-- 5b) Notlarım: kişisel notlar / yapılacaklar; seçilen zamanda sahibine e-posta
+create table if not exists public.notes (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null default auth.uid() references public.profiles(id) on delete cascade,
+  title text not null check (char_length(title) between 1 and 200),
+  body text not null default '' check (char_length(body) <= 2000),
+  todos jsonb not null default '[]' check (jsonb_typeof(todos) = 'array' and jsonb_array_length(todos) <= 50),
+  remind_at timestamptz,
+  reminded_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists notes_user_idx on public.notes(user_id, remind_at);
+create index if not exists notes_remind_idx on public.notes(remind_at) where reminded_at is null;
+alter table public.notes enable row level security;
+drop policy if exists "notes own" on public.notes;
+create policy "notes own" on public.notes for all to authenticated
+  using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+grant select, insert, update, delete on table public.notes to authenticated;
+
+create or replace function public.enqueue_note_reminders()
+returns int language plpgsql security definer set search_path = ''
+as $$
+declare r record; n int := 0;
+begin
+  for r in
+    update public.notes x set reminded_at = now()
+    where x.reminded_at is null and x.remind_at <= now() and x.remind_at > now() - interval '30 minutes'
+    returning x.*
+  loop
+    insert into public.email_queue (dedupe_key, to_email, subject, html)
+    select 'note:' || r.id || ':' || extract(epoch from r.remind_at)::bigint, u.email,
+      '📌 Notun: ' || r.title,
+      '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:520px;margin:auto;padding:20px;color:#0f172a">'
+      || '<p style="margin:0 0 4px;color:#4f46e5;font-weight:700;font-size:13px">HAFTALIK PLAN · NOTLARIM</p>'
+      || '<h2 style="margin:0 0 14px;font-size:20px">' || private.h(r.title) || '</h2>'
+      || case when r.body <> '' then '<p style="margin:0 0 10px;white-space:pre-wrap">' || private.h(r.body) || '</p>' else '' end
+      || case when jsonb_array_length(r.todos) > 0 then
+           '<p style="margin:10px 0 4px"><b>Yapılacaklar:</b></p><ul style="margin:0;padding-left:20px">'
+           || (select string_agg('<li>' || case when (t->>'done')::boolean then '✅ <s>' || private.h(t->>'text') || '</s>' else private.h(t->>'text') end || '</li>', '' order by k)
+               from jsonb_array_elements(r.todos) with ordinality as z(t, k))
+           || '</ul>' else '' end
+      || '<p style="margin:16px 0 0"><a href="https://samiltalha.github.io/haftalik-plan/" style="color:#4f46e5">Uygulamayı aç</a></p></div>'
+    from auth.users u where u.id = r.user_id and u.email is not null
+    on conflict (dedupe_key) do nothing;
+    n := n + 1;
+  end loop;
+  return n;
+end $$;
+revoke all on function public.enqueue_note_reminders() from public, anon, authenticated;
+
 -- 6) Her dakika: hatırlatmaları sıraya koy, bekleyen e-posta varsa "bildirim" fonksiyonunu çağır
 create or replace function public.bildirim_tick()
 returns void language plpgsql security definer set search_path = ''
 as $$
 begin
   perform public.enqueue_reminders();
+  perform public.enqueue_note_reminders();
   if exists (select 1 from public.email_queue where sent_at is null and attempts < 5) then
     perform net.http_post(
       url := 'https://xmogshoaqabzxzyzdpvs.supabase.co/functions/v1/bildirim',
