@@ -55,6 +55,11 @@
     <label>Not
       <textarea name="note" rows="2" maxlength="1000" placeholder="İsteğe bağlı"></textarea>
     </label>
+    <div id="peopleWrap" class="people" hidden>
+      <div class="people-label">Ekip arkadaşlarını dahil et</div>
+      <div class="people-picker" id="peoplePicker"></div>
+      <p class="hint" id="peopleHint"></p>
+    </div>
     <label class="toggle">
       <span class="txt"><b>Ekip de görsün</b><small>Kapalıysa bu planı sadece sen görürsün</small></span>
       <input name="share" type="checkbox">
@@ -73,7 +78,7 @@
 
 <dialog id="viewDialog">
   <div class="view-body" id="viewBody"></div>
-  <div class="actions"><span class="spacer"></span><button type="button" class="btn primary" id="closeViewBtn">Tamam</button></div>
+  <div class="actions"><button type="button" class="btn danger" id="leavePlanBtn" hidden>Plandan ayrıl</button><span class="spacer"></span><button type="button" class="btn primary" id="closeViewBtn">Tamam</button></div>
 </dialog>
 
 <dialog id="profileDialog">
