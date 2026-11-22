@@ -450,3 +450,7 @@ label.radio small { display: block; color: var(--muted); font-weight: 400; margi
 .note .todo-list { margin: 6px 0 0; }
 .note .todo-list li { padding: 5px 2px; }
 .row2 > label { min-width: 0; } .row2 input { width: 100%; max-width: 100%; box-sizing: border-box; }
+.push-banner { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.push-banner p { flex: 1; min-width: 200px; margin: 0; }
+.push-banner small { color: var(--text-2); }
+.push-actions { display: flex; gap: 8px; }

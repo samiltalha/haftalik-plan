@@ -1,5 +1,5 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm';
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
+import { SUPABASE_URL, SUPABASE_KEY, VAPID_PUBLIC } from './config.js';
 
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
@@ -232,6 +232,7 @@ async function renderToday() {
       <button class="btn primary sm" id="planNextWeek">Gelecek haftayı planla</button></div>`;
   }
   if (!state.profile.is_member) html += joinCard();
+  html += pushCard();
 
   const summary = current
     ? `<div class="status"><span class="dot"></span><span>Şu an <b>${esc(current.title)}</b> · ${hm(current.occEnd)}'a kadar</span></div>`
@@ -260,6 +261,7 @@ async function renderToday() {
   $app.innerHTML = shell(html, 'Bugün ne yapacağım?', fmtDay(now));
   bindCommon();
   bindNotes();
+  bindPush();
   document.getElementById('planNextWeek')?.addEventListener('click', () => { state.calDay = addDays(weekStart(new Date()), 7); setView('week'); });
 }
 
@@ -440,6 +442,46 @@ function bindCommon() {
 }
 
 function setView(v) { state.view = v; localSet('view', v); render(); }
+
+/* ================= telefon bildirimleri ================= */
+const pushSupported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function pushCard() {
+  if (localGet('pushOn') === state.profile.id && pushSupported() && Notification.permission === 'granted') return '';
+  if (localGet('pushHide') === '1') return '';
+  if (isIOS() && !isStandalone()) {
+    return `<div class="card banner push-banner"><p><b>🔔 Telefonuna bildirim gelsin</b><br><small>iPhone'da önce Safari'de <b>Paylaş → Ana Ekrana Ekle</b> ile uygulamayı ana ekrana ekle, sonra oradaki simgeden açıp bildirimleri aç.</small></p><button class="btn sm ghost" data-push-hide>Gizle</button></div>`;
+  }
+  if (!pushSupported()) return '';
+  if (Notification.permission === 'denied') {
+    return `<div class="card banner push-banner"><p><b>🔕 Bildirimler engelli</b><br><small>Tarayıcı ayarlarından bu siteye bildirim izni verirsen hatırlatmalar telefonuna da gelir.</small></p><button class="btn sm ghost" data-push-hide>Gizle</button></div>`;
+  }
+  return `<div class="card banner push-banner"><p><b>🔔 Telefonuna bildirim gelsin mi?</b><br><small>Toplantı, plan ve not hatırlatmaları kilit ekranında da görünür.</small></p><span class="push-actions"><button class="btn sm ghost" data-push-hide>Sonra</button><button class="btn primary sm" id="pushOnBtn">Bildirimleri aç</button></span></div>`;
+}
+const b64ToBytes = s => { const p = '='.repeat((4 - s.length % 4) % 4); const r = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(r, c => c.charCodeAt(0)); };
+async function enablePush() {
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { toast('Bildirim izni verilmedi'); render(); return; }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(VAPID_PUBLIC) });
+    const j = sub.toJSON();
+    const { error } = await sb.rpc('save_push_subscription', { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth });
+    if (error) throw error;
+    localSet('pushOn', state.profile.id);
+    reg.showNotification('Bildirimler açıldı ✓', { body: 'Hatırlatmalar artık bu cihaza da gelecek.', icon: 'icon-192.png' });
+    toast('Bildirimler açıldı');
+    render();
+  } catch (e) {
+    toast('Bildirim açılamadı: ' + (e.message || e));
+  }
+}
+function bindPush() {
+  document.getElementById('pushOnBtn')?.addEventListener('click', enablePush);
+  $app.querySelectorAll('[data-push-hide]').forEach(b => b.addEventListener('click', () => { localSet('pushHide', '1'); render(); }));
+}
 
 /* ================= notlarım ================= */
 async function fetchNotes(today) {
