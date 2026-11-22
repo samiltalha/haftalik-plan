@@ -22,17 +22,27 @@ App Store'dan ücretsiz **Scriptable** uygulamasını indir.
 
 ## 2. Betiği ekle
 
-1. iPhone'da Safari ile bu adresi aç:
-   https://raw.githubusercontent.com/samiltalha/haftalik-plan/main/widget/haftalik-plan-widget.js
-2. Sayfadaki yazıya uzun bas, **Tümünü Seç**, sonra **Kopyala**.
-3. Scriptable'ı aç, sağ üstteki **+** ile yeni betik oluştur, kopyaladığını yapıştır.
-4. Üstteki başlığa dokunup adını **Günlük Akış** yap, **Bitti** de.
+1. Scriptable'ı aç, sağ üstteki **+** ile yeni bir betik oluştur.
+2. Aşağıdaki kısa kodu kopyalayıp yapıştır ve sağ alttaki **▶︎**'a bas:
+
+```js
+const url = 'https://raw.githubusercontent.com/samiltalha/haftalik-plan/main/widget/haftalik-plan-widget.js';
+const code = await new Request(url).loadString();
+let fm;
+try { fm = FileManager.iCloud(); fm.documentsDirectory(); } catch (e) { fm = FileManager.local(); }
+fm.writeString(fm.joinPath(fm.documentsDirectory(), 'Günlük Akış.js'), code);
+const a = new Alert(); a.title = 'Kuruldu ✓'; a.message = code.split('\n').length + ' satır indirildi'; a.addAction('Tamam'); await a.present();
+```
+
+3. **"Kuruldu ✓"** mesajı çıkınca listede **Günlük Akış** adlı betik belirir. Kısa kurulum betiğini silebilirsin.
 
 ## 3. Bir kez çalıştırıp giriş yap
 
-1. Betiği açıkken sağ alttaki **▶︎** düğmesine bas.
+1. **Günlük Akış** betiğini aç, sağ alttaki **▶︎** düğmesine bas.
 2. Haftalık Plan uygulamasında kullandığın **e-posta ve şifreyi** gir.
-3. Açılan menüden **"Önizle: kilit ekranı"** ile nasıl görüneceğine bakabilirsin.
+3. Açılan menüden **"Önizle: kilit ekranı"** ile nasıl görüneceğine bakabilirsin ya da **Kapat** ile geçebilirsin.
+
+"Invalid login credentials" hatası alırsan e-posta ya da şifre uygulamadakiyle aynı değildir; önce bilgisayardan uygulamaya aynı bilgilerle girmeyi dene.
 
 Şifren sadece senin telefonunun Anahtar Zinciri'nde saklanır, kimseye gönderilmez.
 
